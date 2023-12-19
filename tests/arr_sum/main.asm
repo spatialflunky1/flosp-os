@@ -21,7 +21,7 @@ addition:
     mov rcx,10
     mov rdx,0
 stack_chars:
-    div rcx ; rdx:rax / rcx = 
+    div rcx ; rdx:rax / rcx 
     add rdx,48
     push rdx
     mov rdx,0 ; reset the upper qword
