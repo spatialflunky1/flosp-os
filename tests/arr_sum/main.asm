@@ -39,11 +39,10 @@ print:
     dec rbx
     cmp rbx,0
     jne print
-
+    ; Print newline
     push 0Ah
     mov rsi,rsp
     syscall
-
 exit:
     mov rax,60
     mov rdi,0
