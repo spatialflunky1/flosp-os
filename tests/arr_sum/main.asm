@@ -3,8 +3,8 @@ global _start
 ; rbx shall be used as the counter as linux syscalls are dumb and mess with rcx
 
 section .data
-arr db 1,5,3,7,4,3,11
-arrlen EQU $ - arr
+arr dq 1,5,3,7,4,3,11
+arrlen EQU ($ - arr)/8
 
 section .text
 _start:
@@ -13,13 +13,11 @@ _start:
     mov rbx,arrlen
 addition:
     add rax,[rsi]
-    inc rsi
+    add rsi,8
     dec rbx
     cmp rbx,0
     jne addition
     ; rax contains the total at this point, rbx is 0
-    cmp rax,34
-    je exit
     mov rcx,10
     mov rdx,0
 stack_chars:
@@ -34,10 +32,6 @@ stack_chars:
     mov rax,1 ; write syscall
     mov rdi,1
     mov rdx,1 ; only 1 char
-;    add rbx,48
-;    push rbx
-;    mov rsi,rsp
-;    syscall
 print:
     mov rsi,rsp
     syscall
