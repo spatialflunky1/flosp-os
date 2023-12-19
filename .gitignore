@@ -3,3 +3,6 @@
 
 # Bochs config file
 bochsrc
+
+# Object files
+*.o
