@@ -1,9 +1,9 @@
 To break away from the traditional calling conventions of Unix and Windows
-Flosp will have it's own standard calling convention as listed below. This
+Flosp will have its own standard calling convention as listed below. This
 calling convention is subject to change as the operating system grows in
 development (ex. floating point parameters: xmm)
 
-All registers are conserved except for ax/rax being the register for returning
+All registers are conserved except for ax/rax which is the register for returning
 values.
 
 
