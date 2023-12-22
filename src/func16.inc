@@ -1,4 +1,4 @@
-; Registers to stack save: cx (bx is unmodified)
+; Registers to stack save: cx, si (bx is unmodified)
 ; print(bx:message(m8), cx:message_len(i16/r16))
 print:
     push cx
