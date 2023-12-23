@@ -5,4 +5,4 @@ List of 16 bit functions available to the bootloader (func16.inc):
 |m: memory    |
 ---------------
 
-1: print(bx:message(m8), cx:message_length(i16/r16))
+1: print(bx:message(m8))

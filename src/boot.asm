@@ -1,7 +1,6 @@
 %include "boot.inc"
 
 mov bx,bootmsg
-mov cx,bootmsg_len
 call print
 
 halt: hlt ; better idle loop
@@ -11,8 +10,8 @@ jmp halt
 %include "func16.inc"
 
 ; Data section
-bootmsg db "Booting Flosp...",0Dh,0Ah
-bootmsg_len EQU $ - bootmsg ; add `align 2` before this macro if more data is added
+bootmsg db "Booting Flosp...",0Dh,0Ah,0
+; add `align 2` before this if more data is added
 
 ; Magic section
 times 510-($-$$) db 0

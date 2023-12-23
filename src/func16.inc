@@ -1,7 +1,6 @@
-; Registers to stack save: cx, si (bx is unmodified)
-; print(bx:message(m8), cx:message_len(i16/r16))
-print:
-    push cx
+; Registers to stack save: si (bx is unmodified)
+; print(bx:message(m8))
+print: 
     push si
     mov si,bx ; can't dereference bx for some reason
     mov ah,0Eh ; tty output
@@ -10,11 +9,9 @@ print_loop:
     mov al,[si] ; character
     int 10h
     inc si
-    dec cx
-    cmp cx,0
+    cmp byte [si],0
     jne print_loop
     ; loop exit
     pop si
-    pop cx
     ret
     
