@@ -52,7 +52,15 @@ print_hex:
     push bx
     push cx
     push dx
-    mov ax,bx ; div uses ax
+    ; print 0x to signify hex
+    push bx
+    mov bh,00h ; page
+    mov ah,0Eh
+    mov al,'0'
+    int 10h
+    mov al,'x'
+    int 10h
+    pop ax ; div uses ax
     mov bx,16
     convert_hex:
         div bx
