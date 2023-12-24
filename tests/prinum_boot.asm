@@ -48,8 +48,7 @@ print:
 halt: hlt
 
 ; Data section
-number dw 12349 ; 0,1
-len db 0 ; 2
+number dw 12349
 
 ; Magic section
 times 510-($-$$) db 0

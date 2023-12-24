@@ -2,6 +2,8 @@
 
 mov bx,bootmsg
 call print
+mov bx,newline
+call print
 
 halt: hlt ; better idle loop
 jmp halt
@@ -10,8 +12,10 @@ jmp halt
 %include "func16.inc"
 
 ; Data section
-bootmsg db "Booting Flosp...",0Dh,0Ah,0
-; add `align 2` before this if more data is added
+bootmsg db "Booting Flosp...",0
+align 2
+newline db 0Dh,0Ah,0
+; Macros
 
 ; Magic section
 times 510-($-$$) db 0

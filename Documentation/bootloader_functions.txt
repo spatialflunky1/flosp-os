@@ -6,3 +6,5 @@ List of 16 bit functions available to the bootloader (func16.inc):
 ---------------
 
 1: print(bx:message(m8))
+2: print_int(bx:number(r16))
+3: print_hex(bx:number(r16))
