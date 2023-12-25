@@ -23,6 +23,7 @@ print_int:
     push dx
     mov ax,bx ; div uses ax
     mov bx,10
+    mov dx,0 ; divisor must be initialized beforehand
     convert_int:
         div bx
         add dx,48 ; convert remainder to char
@@ -62,6 +63,7 @@ print_hex:
     int 10h
     pop ax ; div uses ax
     mov bx,16
+    mov dx,0
     convert_hex:
         div bx
         cmp dx,10
