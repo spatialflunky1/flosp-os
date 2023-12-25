@@ -23,7 +23,7 @@ print_int:
     push dx
     mov ax,bx ; div uses ax
     mov bx,10
-    mov dx,0 ; divisor must be initialized beforehand
+    mov dx,0 ; upper word/remainder must be initialized beforehand
     convert_int:
         div bx
         add dx,48 ; convert remainder to char
