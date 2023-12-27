@@ -1,5 +1,6 @@
 # Compiled boot sector code
 *.bin
+*.img
 
 # Bochs config file
 bochsrc

@@ -61,29 +61,29 @@ print_hex:
     int 10h
     mov al,'x'
     int 10h
-    pop ax ; div uses ax
-    mov bx,16
-    mov dx,0
-    convert_hex:
-        div bx
-        cmp dx,10
+    pop bx
+    mov cx,0 ; counter
+    get_hex_digits:
+        mov ax,bx
+        and ax,0x000F ; ax contains last 4 bits, aka single digit of hex
+        cmp ax,10 ; convert hex digit to char
         jge alph
-numb:   add dx,48 ; convert remainder to char
-        jmp exit
-alph:   add dx,55
-exit:   push dx
-        mov dx,0
+numb:   add ax,48
+        jmp hdone
+alph:   add ax,55
+hdone:  push ax
         inc cx
-        cmp ax,0
-        jne convert_hex
-    mov bh,00h ; page num
-    print_hex_chars:
+        shr bx,4
+        cmp bx,0
+        jne get_hex_digits
+    mov bh,00h   
+    print_hex_digits:
         pop ax
         mov ah,0Eh
         int 10h
         dec cx
         cmp cx,0
-        jne print_hex_chars
+        jne print_hex_digits
     pop dx
     pop cx
     pop bx

@@ -5,6 +5,12 @@ call print
 mov bx,newline
 call print
 
+mov bx,4230
+call print_int
+
+mov bx,newline
+call print
+
 halt: hlt ; better idle loop
 jmp halt
 
