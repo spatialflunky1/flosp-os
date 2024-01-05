@@ -23,6 +23,6 @@ align 2
 newline db 0Dh,0Ah,0
 ; Macros
 
-; Magic section
-times 510-($-$$) db 0
-dw 0xaa55
+; Boot section
+times 510-($-$$) db 0 ; padding to fill to 512 bytes
+dw 0xaa55 ; boot num
