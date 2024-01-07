@@ -9,10 +9,10 @@ call print
 mov bx,newline
 call print
 
-mov al,5 ; Load 5 sectors
-mov bx,0x9000 ; Load sectors to this offset from 0x0000 (ES)
-mov dl,[BOOT_DRIVE]
-call disk_load
+;mov al,5 ; Load 5 sectors
+;mov bx,0x9000 ; Load sectors to this offset from 0x0000 (ES)
+;mov dl,[BOOT_DRIVE]
+;call disk_load
 
 halt: hlt ; better idle loop
 jmp halt

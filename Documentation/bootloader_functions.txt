@@ -4,3 +4,4 @@ List of 16 bit functions available to the bootloader (func16.inc):
 2: print_int(bx:number)
 3: print_hex(bx:number)
 4: disk_load(bx:memory_offset(addr), al:read_count, dl:drive_num)
+- loads the first 2 sectors of the booted drive

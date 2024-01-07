@@ -89,21 +89,25 @@ hdone:  push ax
     pop ax
     ret
 
-; Registers to stack save: ax,cx
+; Registers to stack save: ax,cx,dx
 ; disk_load(bx:memory_offset(addr), al:read_count, dl:drive_num)
 disk_load:
-    push ax
+    push dx
     push cx
+    push ax
     mov ah,02h ; read sectors from drive
     ; set location to read
+    mov dh,0 ; read 0th head
     mov ch,0 ; read 0th cylinder
-    mov cl,0 ; read 0th sector
+    mov cl,2 ; read 2nd sector
     int 13h
     jc dskerr ; carry flag indicates general fault
-    cmp al,data_count
+    mov dl,al ; dl = al (bytes read)
+    pop ax    ; al = bytes supposed to have been read
+    cmp al,dl
     jne dskerr
     pop cx
-    pop ax
+    pop dx
     ret
     dskerr:
         mov bx,disk_read_error_msg
