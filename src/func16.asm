@@ -1,5 +1,5 @@
 ; Registers to stack save: si
-; print(bx:message(m8))
+; print(bx:message(addr))
 print: 
     push si
     mov si,bx ; can't dereference bx for some reason
@@ -15,7 +15,7 @@ print:
     ret
    
 ; Registers to stack save: ax, bx, cx, dx
-; print_int(bx:number(r16))
+; print_int(bx:number)
 print_int:
     push ax
     push bx
@@ -47,13 +47,12 @@ print_int:
     pop ax
     ret
     
-; Registers to stack save:
-; print_hex(bx:number(r16))
+; Registers to stack save: ax,bx,cx
+; print_hex(bx:number)
 print_hex:
     push ax
     push bx
     push cx
-    push dx
     ; print 0x to signify hex
     push bx
     mov bh,00h ; page
@@ -85,8 +84,28 @@ hdone:  push ax
         dec cx
         cmp cx,0
         jne print_hex_digits
-    pop dx
     pop cx
     pop bx
     pop ax
     ret
+
+; Registers to stack save: ax,cx
+; disk_load(bx:memory_offset(addr), al:read_count, dl:drive_num)
+disk_load:
+    push ax
+    push cx
+    mov ah,02h ; read sectors from drive
+    ; set location to read
+    mov ch,0 ; read 0th cylinder
+    mov cl,0 ; read 0th sector
+    int 13h
+    jc dskerr ; carry flag indicates general fault
+    cmp al,data_count
+    jne dskerr
+    pop cx
+    pop ax
+    ret
+    dskerr:
+        mov bx,disk_read_error_msg
+        call print
+        jmp $

@@ -6,16 +6,6 @@ development (ex. floating point parameters: xmm)
 All registers are conserved except for ax/rax which is the register for returning
 values.
 
-
-16 bit (bootloader):
-
-result,   1st   ,   2nd   ,   3rd   
------- --------- --------- ---------
-  ax      bx        cx        dx
-
-
-64 bit (OS):
-
 result,   1st   ,   2nd   ,   3rd   
 ------ --------- --------- ---------
  rax      rbx       rcx       rdx

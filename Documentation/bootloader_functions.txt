@@ -1,10 +1,6 @@
 List of 16 bit functions available to the bootloader (func16.inc):
----------------
-|i: immediate |
-|r: register  |
-|m: memory    |
----------------
 
-1: print(bx:message(m8))
-2: print_int(bx:number(r16))
-3: print_hex(bx:number(r16))
+1: print(bx:message(addr))
+2: print_int(bx:number)
+3: print_hex(bx:number)
+4: disk_load(bx:memory_offset(addr), al:read_count, dl:drive_num)
