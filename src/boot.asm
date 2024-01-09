@@ -18,7 +18,8 @@ halt: hlt ; better idle loop
 jmp halt
 
 ; Functions (after hlt so they wont start executing after main instructions end)
-%include "func16.asm"
+%include "func16.asm" ; 16 bit functions used by the bootloader
+%include "gdt.asm" ; Global Descriptor Table
 
 ; Data section
 bootmsg db "Booting Flosp...",0
@@ -34,3 +35,4 @@ data_count EQU 5
 ; Boot section
 times 510-($-$$) db 0 ; padding to fill to 512 bytes
 dw 0xaa55 ; boot num
+
