@@ -2,6 +2,7 @@
 
 mov [BOOT_DRIVE],dl ; bios stores boot drive in dl at boot
 
+; Print boot message
 mov bx,bootmsg
 call print
 mov bx,newline
@@ -14,12 +15,21 @@ call print
 ;mov dl,[BOOT_DRIVE]
 ;call disk_load
 
-halt: hlt ; better idle loop
-jmp halt
+call sw_protected_mode
 
-; Functions (after hlt so they wont start executing after main instructions end)
+halt16: hlt ; better idle loop
+jmp halt16
+
+; After hlt so they wont start executing after main instructions end
 %include "func16.asm" ; 16 bit functions used by the bootloader
 %include "gdt.asm" ; Global Descriptor Table
+%include "pm_init.asm" ; Protected Mode initialization
+
+; Protected mode section
+[bits 32]
+protected_mode_begin:
+    halt32: hlt
+    jmp halt32
 
 ; Data section
 bootmsg db "Booting Flosp...",0

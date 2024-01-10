@@ -1,3 +1,4 @@
+[bits 16]
 ; Registers to stack save: si
 ; print(bx:message(addr))
 print: 
@@ -113,3 +114,12 @@ disk_load:
         mov bx,disk_read_error_msg
         call print
         jmp $
+
+sw_protected_mode: ; Switch to 32 bit protected mode
+    cli ; disable interrupts
+    lgdt [gdt_descriptor]
+    mov eax,cr0
+    or eax,0x1
+    mov cr0,eax ; set first bit of cr0, this sets the cpu in 32 bit mode
+    jmp CODE_SEG:protected_mode_init   ; far jump into the code segment
+                                        ; far jump makes sure all instructions in pipeline are completed so as not to run instructions intended for real mode in protected mode
