@@ -1,17 +1,17 @@
 [bits 16]
 ; Registers to stack save: si
-; print(bx:message(addr))
-print: 
+; print_16(bx:message(addr))
+print_16: 
     push si
     mov si,bx ; can't dereference bx for some reason
     mov ah,0Eh ; tty output
     mov bh,00h ; page number
-    print_loop:
+    print_16_loop:
         mov al,[si] ; character
         int 10h
         inc si
         cmp byte [si],0
-        jne print_loop
+        jne print_16_loop
     pop si
     ret
    
@@ -112,7 +112,7 @@ disk_load:
     ret
     dskerr:
         mov bx,disk_read_error_msg
-        call print
+        call print_16
         jmp $
 
 sw_protected_mode: ; Switch to 32 bit protected mode

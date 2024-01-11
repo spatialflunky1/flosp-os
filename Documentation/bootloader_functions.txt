@@ -1,7 +1,13 @@
 List of 16 bit functions available to the bootloader (func16.inc):
 
-1: print(bx:message(addr))
+Real mode functions:
+---------------------
+1: print_16(bx:message(addr))
 2: print_int(bx:number)
 3: print_hex(bx:number)
 4: disk_load(bx:memory_offset(addr), al:read_count, dl:drive_num)
 - loads the first 2 sectors of the booted drive
+
+Protected mode functions:
+--------------------------
+1: print_32(ebx:message(addr))
