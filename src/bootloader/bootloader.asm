@@ -5,8 +5,6 @@ mov [BOOT_DRIVE],dl ; bios stores boot drive in dl at boot
 ; Print boot message
 mov bx,bootmsg
 call print_16
-mov bx,newline_16
-call print_16
 
 ;mov al,5 ; Load 5 sectors
 ;mov bx,0x9000 ; Load sectors to this offset from 0x0000 (ES)
@@ -28,24 +26,24 @@ jmp halt16
 [bits 32]
 protected_mode_begin:
     mov ebx,protected_mode_message
-    call print_32 
+    call print_32
     halt32: hlt
     jmp halt32
 
 ; Data section
-bootmsg db "Booting Flosp...",0
+bootmsg                 db "Booting Flosp...",0
 align 2
-protected_mode_message db "Entered into protected mode",0
+protected_mode_message  db "Entered into protected mode",0
 align 2
-newline_16 db 0Dh,0Ah,0
+newline_16              db 0Dh,0Ah,0
 align 2
-newline db 0Ah,0
+newline                 db 0Ah,0
 align 2
-disk_read_error_msg db "Disk read error",0
+disk_read_error_msg     db "Disk read error",0
 align 2
-BOOT_DRIVE db 0
+BOOT_DRIVE              db 0
 ; Macros
-data_count EQU 5
+data_count              EQU 5
 
 ; Boot section
 times 510-($-$$) db 0 ; padding to fill to 512 bytes
