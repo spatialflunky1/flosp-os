@@ -19,16 +19,16 @@ jmp sw_protected_mode
 halt16: hlt ; better idle loop
 jmp halt16
 
+%include "func16.asm" ; 16 bit functions for starting the bootloader
+%include "gdt.asm" ; Global Descriptor Table
+%include "pm_init.asm" ; Protected Mode initialization
+
 ; 2nd sector starts here
 ; Protected mode section
 [bits 32]
 protected_mode_begin:
     ; enter 2nd sector from here
     jmp 0x7E00
-
-%include "func16.asm" ; 16 bit functions for starting the bootloader
-%include "gdt.asm" ; Global Descriptor Table
-%include "pm_init.asm" ; Protected Mode initialization
 
 ; Data section
 ; -------------
