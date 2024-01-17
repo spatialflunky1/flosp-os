@@ -7,7 +7,7 @@ mov bx,bootmsg
 call print_16
 
 mov al,1 ; Load 1 sector
-mov bx,0x7E00
+mov bx,0x7E00 ; 0x0200 after 0x7C00 which is where the first sector autoloads to
 ;Load sectors to 0x0000(ES) : 0x9000(BX) 
 ;mov es,bx
 ;mov bx,0x0
