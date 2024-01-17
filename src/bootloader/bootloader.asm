@@ -12,7 +12,7 @@ mov bx,0x7E00 ; 0x0200 after 0x7C00 which is where the first sector autoloads to
 ;mov es,bx
 ;mov bx,0x0
 mov dl,[BOOT_DRIVE]
-call disk_load ; sector loaded to 0000h:1000h
+call disk_load
 
 jmp sw_protected_mode
 
