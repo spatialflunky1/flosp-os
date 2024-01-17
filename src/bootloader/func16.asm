@@ -91,7 +91,7 @@ hdone:  push ax
     ret
 
 ; Registers to stack save: ax,cx,dx
-; disk_load(bx:memory_offset(addr), al:read_count, dl:drive_num)
+; disk_load(bx:memory_offset(addr), al:read_count, dl:drive_num, es:memory_segment(addr))
 disk_load:
     push dx
     push cx
@@ -100,7 +100,7 @@ disk_load:
     ; set location to read
     mov dh,0 ; read 0th head
     mov ch,0 ; read 0th cylinder
-    mov cl,2 ; read 2nd sector
+    mov cl,2 ; start at 2nd sector
     int 13h
     jc dskerr ; carry flag indicates general fault
     mov dl,al ; dl = al (bytes read)
@@ -114,12 +114,3 @@ disk_load:
         mov bx,disk_read_error_msg
         call print_16
         jmp $
-
-sw_protected_mode: ; Switch to 32 bit protected mode
-    cli ; disable interrupts
-    lgdt [gdt_descriptor]
-    mov eax,cr0
-    or eax,0x1
-    mov cr0,eax ; set first bit of cr0, this sets the cpu in 32 bit mode
-    jmp CODE_SEG:protected_mode_init   ; far jump into the code segment
-                                        ; far jump makes sure all instructions in pipeline are completed so as not to run instructions intended for real mode in protected mode

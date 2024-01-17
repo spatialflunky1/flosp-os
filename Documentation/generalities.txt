@@ -1,1 +1,1 @@
-The newline character will be Line Feed ('\n', 0Ah)
+The newline character is Line Feed ('\n', 0Ah)

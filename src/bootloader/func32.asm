@@ -68,4 +68,5 @@ WF_BB EQU 0x0F ; White foreground, black background
 ; Variables
 VIDEO_LOC dd VIDEO_MEM+(80*2)
 LINE_LOC db 1 ; current line
+align 2
 CURSOR_LOC dw 80 ; starts at 80 to offset original boot message
