@@ -6,11 +6,9 @@ mov [BOOT_DRIVE],dl ; bios stores boot drive in dl at boot
 mov bx,bootmsg
 call print_16
 
-mov al,1 ; Load 1 sector
+mov al,2 ; Load 2 sectors
 mov bx,0x7E00 ; 0x0200 after 0x7C00 which is where the first sector autoloads to
-;Load sectors to 0x0000(ES) : 0x9000(BX) 
-;mov es,bx
-;mov bx,0x0
+;Load sectors to 0x0000(ES) : 0x7E00(BX) 
 mov dl,[BOOT_DRIVE]
 call disk_load
 
@@ -46,11 +44,11 @@ BOOT_DRIVE              db 0
 ; Macros
 
 ; Boot section
-times 510-($-$$) db 0 ; padding to fill to 512 bytes
+times 510-($-$$) db 0 ; padding to fill to 512 bytes, for aligning the definition below
 dw 0xAA55 ; boot num
 
 sector_load:
-    mov ebx,protected_mode_message
+    mov ebx,protected_mode_msg
     call print_32
     mov ebx,newline
     call print_32
@@ -59,6 +57,20 @@ sector_load:
     ; if available, continue into long mode
     call detect_64
     ; returns here if long mode is detected
+    ;mov ebx,cpu_64_detected_msg
+    ;call print_32
+    ;mov ebx,newline
+    ;call print_32
+    ; enable A20 line to enable the usage of all memory
+    call enable_a20
+    mov ebx,a20_enabled_msg
+    call print_32
+    ;mov ebx,newline
+    ;call print_32
+    ;mov ebx,a20_enabled_msg
+    ;call print_32
+    ; TODO: fix the above commented print statements, something is wrong with newlines in print_32
+
     halt32: hlt
     jmp halt32
 
@@ -73,16 +85,22 @@ sector_load:
 ; Data section
 ; -------------
 ; Messages:
-protected_mode_message  db "Entered into protected mode",0
+protected_mode_msg      db "Entered protected mode",0
+align 2
+cpu_64_detected_msg     db "64 bit processor detected",0
+align 2
+a20_enabled_msg         db "A20 line enabled",0
 ; Error Messages:
 align 2
 no_cpuid_msg            db "FATAL: CPUID instruction not available",0
 align 2
 no_long_mode_msg        db "FATAL: Processor does not support 64-bit mode",0
+align 2
+no_a20_msg              db "FATAL: Failed to enable A20 line",0
 ; Internal Strings:
 align 2
 newline                 db 0Ah,0
 ; Bootloader Variables:
 ; Macros
 
-times 1024-($-$$) db 0 ; sector padding
+times 1536-($-$$) db 0 ; 2 sectors padding (2*512 + initial 512)
