@@ -39,6 +39,7 @@ print_32:
         jmp newline_32_ret
     print_32_exit:
     mov [VIDEO_LOC],edx
+    mov [LINE_LOC],bl
     ; set cursor pos
     mov dx,CURSOR_MEM
     mov al,0x0F 

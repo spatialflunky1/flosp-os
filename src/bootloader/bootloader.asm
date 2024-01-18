@@ -57,19 +57,14 @@ sector_load:
     ; if available, continue into long mode
     call detect_64
     ; returns here if long mode is detected
-    ;mov ebx,cpu_64_detected_msg
-    ;call print_32
-    ;mov ebx,newline
-    ;call print_32
+    mov ebx,cpu_64_detected_msg
+    call print_32
+    mov ebx,newline
+    call print_32
     ; enable A20 line to enable the usage of all memory
     call enable_a20
     mov ebx,a20_enabled_msg
     call print_32
-    ;mov ebx,newline
-    ;call print_32
-    ;mov ebx,a20_enabled_msg
-    ;call print_32
-    ; TODO: fix the above commented print statements, something is wrong with newlines in print_32
 
     halt32: hlt
     jmp halt32
