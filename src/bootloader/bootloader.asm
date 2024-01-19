@@ -65,17 +65,21 @@ sector_load:
     call enable_a20
     mov ebx,a20_enabled_msg
     call print_32
+    ; switch to long mode
+    jmp sw_long_mode
 
     halt32: hlt
     jmp halt32
 
 %include "func32.asm" ; 32 bit functions
+%include "gdt64.asm"
 %include "lm_init.asm"
+;%include "func64.asm"
 
-;[bits 64]
-;long_mode_begin:
-;    halt64: hlt
-;    jmp halt64
+[bits 64]
+long_mode_begin:
+    halt64: hlt
+    jmp halt64
 
 ; Data section
 ; -------------
@@ -85,6 +89,8 @@ align 2
 cpu_64_detected_msg     db "64 bit processor detected",0
 align 2
 a20_enabled_msg         db "A20 line enabled",0
+align 2
+long_mode_msg           db "Entered long mode",0
 ; Error Messages:
 align 2
 no_cpuid_msg            db "FATAL: CPUID instruction not available",0
@@ -96,6 +102,14 @@ no_a20_msg              db "FATAL: Failed to enable A20 line",0
 align 2
 newline                 db 0Ah,0
 ; Bootloader Variables:
+VIDEO_LOC dd VIDEO_MEM+(80*2)
+LINE_LOC db 1 ; current line
+align 2
+CURSOR_LOC dw 80 ; starts at 80 to offset original boot message
 ; Macros
+VIDEO_MEM EQU 0xB8000
+CURSOR_MEM EQU 0x3D4
+COLLUMNS EQU 80
+WF_BB EQU 0x0F ; White foreground, black background
 
 times 1536-($-$$) db 0 ; 2 sectors padding (2*512 + initial 512)
