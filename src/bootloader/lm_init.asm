@@ -26,7 +26,7 @@ detect_64:
     mov eax,0x80000001
     cpuid
     test edx,1<<29 
-    jz noLongMode ; fail if LM-bit is set
+    jz noLongMode ; fail if the LM-bit is not set
     pop edx
     pop eax
     ret
@@ -124,7 +124,7 @@ sw_long_mode:
     mov ecx,4096
     rep stosd ; fill 4096 DW (val=0) from 0x1000, clear mem
     mov edi,cr3
-    ; set up the page tables
+    ; setup the page tables
     mov DWORD [edi],0x2003 ; PML4T[0] (0x1000) = PDPT
     add edi,0x1000
     mov DWORD [edi],0x3003 ; PDPT[0] (0x2000) = PDT
@@ -139,13 +139,13 @@ sw_long_mode:
         add ebx,0x1000
         add edi,8 ; advance to next entry
         loop set_entry
-    ; Enable PAE-paging by setting the PAE_bit (bit 5) in CR4
+    ; Enable PAE paging by setting the PAE_bit (bit 5) in CR4
     mov eax,cr4
     or eax,1<<5 
     mov cr4,eax
     ;---------------
     ; Set the LM-bit (bit 8)
-    ; The LM-bit is bit 8 of the MSR (Model Specific Register) number 0xC0000080
+    ; The LM-bit is bit 8 of MSR (Model Specific Register) number 0xC0000080
     mov ecx,0xC0000080
     rdmsr
     or eax,1<<8
@@ -157,7 +157,6 @@ sw_long_mode:
     ; Load the 64 bit GDT and enter the 64 bit codespace
     lgdt [gdt64_descriptor]
     jmp CODE_SEG64:long_mode_init
-    jmp $
 
 [bits 64]
 long_mode_init:
