@@ -30,3 +30,4 @@
     B: Set the LM-bit of MSR (Model Specific Register) number 0xC0000080
     C: Enable Paging
     D: Load the 64 bit GDT
+    E: Re-setup the segment registers with respect to the new data segment 
