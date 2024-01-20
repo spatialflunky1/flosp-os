@@ -65,6 +65,8 @@ sector_load:
     call enable_a20
     mov ebx,a20_enabled_msg
     call print_32
+    mov ebx,newline
+    call print_32
     ; switch to long mode
     jmp sw_long_mode
 
@@ -74,23 +76,25 @@ sector_load:
 %include "func32.asm" ; 32 bit functions
 %include "gdt64.asm"
 %include "lm_init.asm"
-;%include "func64.asm"
+%include "func64.asm"
 
 [bits 64]
 long_mode_begin:
+    mov rbx,long_mode_msg
+    call print_64
     halt64: hlt
     jmp halt64
 
 ; Data section
 ; -------------
 ; Messages:
-protected_mode_msg      db "Entered protected mode",0
+protected_mode_msg      db "Entered 32-bit protected mode",0
 align 2
 cpu_64_detected_msg     db "64 bit processor detected",0
 align 2
 a20_enabled_msg         db "A20 line enabled",0
 align 2
-long_mode_msg           db "Entered long mode",0
+long_mode_msg           db "Entered 64-bit long mode",0
 ; Error Messages:
 align 2
 no_cpuid_msg            db "FATAL: CPUID instruction not available",0
