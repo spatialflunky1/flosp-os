@@ -49,7 +49,6 @@ enable_a20:
     call a20_check
     ; if still in function then a20 is not set
     ; firstly the traditional method using keyboard I/O (0x64: cmd port, 0x60: data port)
-    cli
     call a20_wait
     mov al,0xAD
     out 0x64,al ; disable keyboard
@@ -70,7 +69,6 @@ enable_a20:
     mov al,0xAE
     out 0x64,al ; enable keyboard
     call a20_wait
-    sti
     call a20_check
     ; if this method was unsucsessful try the FAST A20 Gate
     in al,0x92
