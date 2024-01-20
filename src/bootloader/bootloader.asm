@@ -106,6 +106,7 @@ no_a20_msg              db "FATAL: Failed to enable A20 line",0
 align 2
 newline                 db 0Ah,0
 ; Bootloader Variables:
+align 2
 VIDEO_LOC dd VIDEO_MEM+(80*2)
 LINE_LOC db 1 ; current line
 align 2
