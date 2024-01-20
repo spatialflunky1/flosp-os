@@ -10,3 +10,4 @@ Protected mode functions:
 --------------------------
 1: print_32(ebx:message(addr))
 2: detect_64()
+3: enable_a20()
