@@ -1,3 +1,11 @@
+; Macros
+%define KVER "0.0.0"
+%define VIDEO_MEM 0xB8000
+%define CURSOR_MEM 0x3D4
+%define COLLUMNS 80
+%define WF_BB 0x0F ; White foreground, black background
+%define KERNEL_OFFSET 0x9000
+
 %include "init.asm"
 
 mov [BOOT_DRIVE],dl ; bios stores boot drive in dl at boot
@@ -5,10 +13,21 @@ mov [BOOT_DRIVE],dl ; bios stores boot drive in dl at boot
 ; Print boot message
 mov bx,bootmsg
 call print_16
+mov bx,newline_16
+call print_16
+mov bx,disk_load_msg
+call print_16
 
-mov al,2 ; Load 2 sectors
+mov al,3 ; Load 3 sectors for the bootloader
+mov cl,2 ; start at 2nd sector
 mov bx,0x7E00 ; 0x0200 after 0x7C00 which is where the first sector autoloads to
 ;Load sectors to 0x0000(ES) : 0x7E00(BX) 
+mov dl,[BOOT_DRIVE]
+call disk_load
+
+mov al,15
+mov cl,5 ; start at 5th sector
+mov bx,0x9000
 mov dl,[BOOT_DRIVE]
 call disk_load
 
@@ -27,11 +46,13 @@ jmp halt16
 protected_mode_begin:
     ; enter 2nd sector from here
     jmp 0x7E00
-
+    
 ; Data section
 ; -------------
 ; Messages:
 bootmsg                 db "Booting Flosp...",0
+align 2
+disk_load_msg           db "Loading boot disk",0
 ; Error Messages:
 align 2
 disk_read_error_msg     db "FATAL: Disk read error",0
@@ -41,7 +62,6 @@ newline_16              db 0Dh,0Ah,0
 ; Bootloader Variables:
 align 2
 BOOT_DRIVE              db 0
-; Macros
 
 ; Boot section
 times 510-($-$$) db 0 ; padding to fill to 512 bytes, for aligning the definition below
@@ -82,6 +102,13 @@ sector_load:
 long_mode_begin:
     mov rbx,long_mode_msg
     call print_64
+    mov rbx,newline
+    call print_64
+    mov rbx,kernel_load_msg
+    call print_64
+
+    call KERNEL_OFFSET
+
     halt64: hlt
     jmp halt64
 
@@ -95,6 +122,8 @@ align 2
 a20_enabled_msg         db "A20 line enabled",0
 align 2
 long_mode_msg           db "Entered 64-bit long mode",0
+align 2
+kernel_load_msg         db "Loading kernel flosp-",KVER,0
 ; Error Messages:
 align 2
 no_cpuid_msg            db "FATAL: CPUID instruction not available",0
@@ -107,14 +136,9 @@ align 2
 newline                 db 0Ah,0
 ; Bootloader Variables:
 align 2
-VIDEO_LOC dd VIDEO_MEM+(80*2)
-LINE_LOC db 1 ; current line
+VIDEO_LOC dd VIDEO_MEM+(80*4)
+LINE_LOC db 2 ; current line
 align 2
-CURSOR_LOC dw 80 ; starts at 80 to offset original boot message
-; Macros
-VIDEO_MEM EQU 0xB8000
-CURSOR_MEM EQU 0x3D4
-COLLUMNS EQU 80
-WF_BB EQU 0x0F ; White foreground, black background
+CURSOR_LOC dw 160 ; starts at 160 to offset original 2 boot messages
 
-times 1536-($-$$) db 0 ; 2 sectors padding (2*512 + initial 512)
+times 2048-($-$$) db 0 ; 2 sectors padding (2*512 + initial 512)
