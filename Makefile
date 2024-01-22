@@ -5,7 +5,9 @@ bootloader:
 
 kernel:
 	gcc -ffreestanding -c src/kernel/kernel.c -o kernel.o
-	ld -o kernel.bin -Ttext 0x9000 kernel.o --oformat binary
+	nasm src/bootloader/kernel_entry.asm -f elf64 -o kernel_entry.o
+	ld -o kernel.bin -Ttext 0x9000 kernel_entry.o kernel.o --oformat binary
+	rm kernel_entry.o
 	rm kernel.o
 
 link:
