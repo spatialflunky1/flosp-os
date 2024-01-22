@@ -1,4 +1,4 @@
-all: bootloader kernel link floppy clear
+all: bootloader kernel link clear
 
 bootloader:	
 	nasm -f bin src/bootloader/bootloader.asm -i src/bootloader -o boot.bin 
@@ -13,13 +13,9 @@ kernel:
 link:
 	cat boot.bin kernel.bin > flosp.bin
 
-floppy:
-	tools/floppy.sh # using virtualbox to test: using floppy image
-
 clear:
 	rm boot.bin
 	rm kernel.bin
-	rm flosp.bin
 
 clean:
-	rm flosp.img
+	rm flosp.bin
