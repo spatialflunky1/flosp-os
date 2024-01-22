@@ -141,4 +141,4 @@ LINE_LOC db 2 ; current line
 align 2
 CURSOR_LOC dw 160 ; starts at 160 to offset original 2 boot messages
 
-times 2048-($-$$) db 0 ; 2 sectors padding (2*512 + initial 512)
+times 2048-($-$$) db 0 ; 3 sectors padding (3*512 + initial 512)
