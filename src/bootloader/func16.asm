@@ -108,6 +108,8 @@ disk_load:
     pop dx
     ret
     dskerr:
+        mov bx,newline_16
+        call print_16
         mov bx,disk_read_error_msg
         call print_16
         jmp $
