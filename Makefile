@@ -21,7 +21,7 @@ iso2:
 	mv boot.bin iso
 	mkisofs -V 'flosp' \
 		-o flosp.iso \
-		-b flosp.bin \
+		-b boot.bin \
 		-no-emul-boot \
 		-boot-load-size 4 \
 		iso/

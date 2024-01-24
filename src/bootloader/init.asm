@@ -2,7 +2,7 @@
 org 0x7C00 ; Sets the start of memory at the base address of the program
 
 ; Set up the segments
-mov ax,cs
+xor ax,ax
 mov ds,ax
 mov es,ax
 mov ss,ax

@@ -7,3 +7,6 @@ bochsrc
 
 # Object files
 *.o
+
+# Iso directory
+iso/

@@ -18,18 +18,21 @@ call print_16
 mov bx,disk_load_msg
 call print_16
 
-mov al,3 ; Load 3 sectors for the bootloader
-mov cl,2 ; start at 2nd sector
-mov bx,0x7E00 ; 0x0200 after 0x7C00 which is where the first sector autoloads to
+; Only needed for floppy booting (autoloads sectors on iso)
+;-----------------------------------------------------------
+;mov al,3 ; Load 3 sectors for the bootloader
+;mov cl,2 ; start at 2nd sector
+;mov bx,0x7E00 ; 0x0200 after 0x7C00 which is where the first sector autoloads to
 ;Load sectors to 0x0000(ES) : 0x7E00(BX) 
-mov dl,[BOOT_DRIVE]
+;mov dl,[BOOT_DRIVE]
 ;call disk_load
 
-mov al,15
-mov cl,5 ; start at 5th sector
-mov bx,0x9000
-mov dl,[BOOT_DRIVE]
+;mov al,15
+;mov cl,5 ; start at 5th sector
+;mov bx,0x9000
+;mov dl,[BOOT_DRIVE]
 ;call disk_load
+;-----------------------------------------------------------
 
 jmp sw_protected_mode
 
