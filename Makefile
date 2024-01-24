@@ -18,12 +18,11 @@ link:
 
 iso2:
 	mv flosp.bin iso
-	mv boot.bin iso
 	mkisofs -V 'flosp' \
 		-o flosp.iso \
-		-b boot.bin \
+		-b flosp.bin \
 		-no-emul-boot \
-		-boot-load-size 4 \
+		-boot-load-size 19 \
 		iso/
 
 clear:

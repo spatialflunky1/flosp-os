@@ -4,7 +4,7 @@
 %define CURSOR_MEM 0x3D4
 %define COLLUMNS 80
 %define WF_BB 0x0F ; White foreground, black background
-%define KERNEL_OFFSET 0x9000
+; %define KERNEL_OFFSET 0x9000 (only used with floppy loading kernel to 0x9000)
 
 %include "init.asm"
 
@@ -110,7 +110,7 @@ long_mode_begin:
     mov rbx,kernel_load_msg
     call print_64
 
-    ;call KERNEL_OFFSET
+    call KERNEL_OFFSET
 
     halt64: hlt
     jmp halt64
@@ -145,3 +145,5 @@ align 2
 CURSOR_LOC dw 160 ; starts at 160 to offset original 2 boot messages
 
 times 2048-($-$$) db 0 ; 3 sectors padding (3*512 + initial 512)
+; Kernel is located directly after the bootloader
+KERNEL_OFFSET EQU $
