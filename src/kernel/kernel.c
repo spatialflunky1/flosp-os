@@ -1,6 +1,9 @@
 #define VIDEO_MEM 0xB8000
 #define WF_BB 0x0F
 
+// Global Vars
+
+
 void outb(unsigned char value, unsigned short port) {
     __asm__("out %0,%1"
             : // No outputs
@@ -21,10 +24,9 @@ void reset_output() {
     outb(0,    0x3D5); // Set the low byte of position
     outb(0x0E, 0x3D4); // Sets 0x3D5 to hold the high byte
     outb(0,    0x3D5); // Sets the high byte of position
-
 }
 
 void main(void) {
-    // reset_output();
+    reset_output();
     for(;;);
 }
