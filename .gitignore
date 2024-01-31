@@ -1,6 +1,5 @@
 # Compiled boot sector code
 *.bin
-*.img
 
 # Bochs config file
 bochsrc
@@ -8,5 +7,6 @@ bochsrc
 # Object files
 *.o
 
-# Iso directory
-iso/
+# Iso
+iso_dir/
+*.iso

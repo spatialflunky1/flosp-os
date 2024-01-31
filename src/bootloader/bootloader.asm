@@ -1,5 +1,4 @@
 ; Macros
-%define KVER "0.0.0"
 %define VIDEO_MEM 0xB8000
 %define CURSOR_MEM 0x3D4
 %define COLLUMNS 80
