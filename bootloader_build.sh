@@ -1,2 +1,2 @@
 version="\"$(cat ver.txt)\""
-nasm -dKVER=$version -f bin src/bootloader/bootloader.asm -i src/bootloader -o boot.bin 
+nasm -dKVER=$version -f bin $1 -i src/bootloader -o $2 
