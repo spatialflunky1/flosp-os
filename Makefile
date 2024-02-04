@@ -25,7 +25,7 @@ iso_dir/flosp.bin: bin/bootloader/boot.bin bin/kernel/kernel.bin
 	cat $^ > $@
 
 bin/bootloader/boot.bin: src/bootloader/bootloader.asm
-	./bootloader_build.sh $< $@
+	./bootloader_build.sh $^ $@
 
 bin/kernel/kernel.bin: obj/bootloader/kernel_entry.o ${OBJ}
 	ld -o $@ -Ttext 0x8400 $^ --oformat binary
@@ -36,8 +36,8 @@ $(OBJ): obj/%.o: src/%.c ${C_HEA}
 obj/bootloader/kernel_entry.o: src/bootloader/kernel_entry.asm
 	nasm $< -f elf64 -o $@
 
-obj/kernel/kernel.o: src/kernel/kernel.c
-	./kernel_build.sh $< $@
+obj/kernel/kernel.o: src/kernel/kernel.c src/kernel/kernel.h
+	./kernel_build.sh $@ $^
 
 clean:
 	rm -f *.iso
