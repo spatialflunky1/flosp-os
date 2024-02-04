@@ -1,10 +1,12 @@
+#ifndef KVER
+#define KVER "0.0.0"
+#endif
 #define VIDEO_MEM 0xB8000
 #define WF_BB 0x0F
 
 // Global Vars
 unsigned char LINE_LOC = 0;
 unsigned short CURS_LOC = 0;
-
 
 void outb(unsigned char value, unsigned short port) {
     __asm__("out %0,%1"
