@@ -15,10 +15,10 @@ void reset_output() {
         VIDEO_LOC+=2;
     }
     // Reset cursor pos
-    outb(0x3D4, 0x0F); // Sets 0x3D5 to hold the low byte
-    outb(0x3D5,    0); // Set the low byte of position
-    outb(0x3D4, 0x0E); // Sets 0x3D5 to hold the high byte
-    outb(0x3D5,    0); // Sets the high byte of position
+    outb(VGA_CTRL, 0x0F); // Sets 0x3D5 to hold the low byte
+    outb(VGA_DATA,    0); // Set the low byte of position
+    outb(VGA_CTRL, 0x0E); // Sets 0x3D5 to hold the high byte
+    outb(VGA_DATA,    0); // Sets the high byte of position
 }
 
 void print(const char* str) {
@@ -38,27 +38,27 @@ void print(const char* str) {
         str++;
     }
     if (curs_enable) {
-        outb(0x3D4, 0x0F);
-        outb(0x3D5, curs_loc & 0x00FF);
-        outb(0x3D4, 0x0E);
-        outb(0x3D5, curs_loc & 0xFF00);
+        outb(VGA_CTRL, 0x0F);
+        outb(VGA_DATA, (unsigned char)(curs_loc & 0x00FF));
+        outb(VGA_CTRL, 0x0E);
+        outb(VGA_DATA, (unsigned char)(curs_loc >> 8));
     }
 }
 
 void disable_cursor() {
-    outb(0x3D4, 0x0A);
-    outb(0x3D5, 0x20); // set bit 5 00100000
+    outb(VGA_CTRL, 0x0A);
+    outb(VGA_DATA, 0x20); // set bit 5 00100000
     curs_enable = 0;
 }
 
 void enable_cursor() {
     // Enable Cursor
-    outb(0x3D4, 0x0A);
-    outb(0x3D5, 0x0E); // unset bit 5, bits 0-4 specifies the scan line for the cursor to begin
+    outb(VGA_CTRL, 0x0A);
+    outb(VGA_DATA, 0x0E); // unset bit 5, bits 0-4 specifies the scan line for the cursor to begin
     // Update Position
-    outb(0x3D4, 0x0F);
-    outb(0x3D5, curs_loc & 0x00FF);
-    outb(0x3D4, 0x0E);
-    outb(0x3D5, curs_loc & 0xFF00);
+    outb(VGA_CTRL, 0x0F);
+    outb(VGA_DATA, (unsigned char)(curs_loc & 0x00FF));
+    outb(VGA_CTRL, 0x0E);
+    outb(VGA_DATA, (unsigned char)(curs_loc >> 8));
     curs_enable = 1;
 }
