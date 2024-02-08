@@ -1,8 +1,9 @@
 #include "vga.h"
 
 // Global Vars
-unsigned char LINE_LOC = 0;
-unsigned short CURS_LOC = 0;
+unsigned char line_loc = 0;
+unsigned short curs_loc = 0;
+unsigned short curs_enable = 1;
 
 void reset_output() {
     // Fill screen with blank chars
@@ -14,30 +15,50 @@ void reset_output() {
         VIDEO_LOC+=2;
     }
     // Reset cursor pos
-    outb(0x0F, 0x3D4); // Sets 0x3D5 to hold the low byte
-    outb(0,    0x3D5); // Set the low byte of position
-    outb(0x0E, 0x3D4); // Sets 0x3D5 to hold the high byte
-    outb(0,    0x3D5); // Sets the high byte of position
+    outb(0x3D4, 0x0F); // Sets 0x3D5 to hold the low byte
+    outb(0x3D5,    0); // Set the low byte of position
+    outb(0x3D4, 0x0E); // Sets 0x3D5 to hold the high byte
+    outb(0x3D5,    0); // Sets the high byte of position
 }
 
 void print(const char* str) {
-    unsigned char* VIDEO_LOC = (unsigned char*) VIDEO_MEM + (CURS_LOC*2);
+    unsigned char* video_loc = (unsigned char*) VIDEO_MEM + (curs_loc*2);
     while ((*str)!=0) {
         if (*str == '\n') {
-            LINE_LOC++;
-            CURS_LOC = LINE_LOC * 80;
-            VIDEO_LOC = (unsigned char*) VIDEO_MEM + (CURS_LOC*2);
+            line_loc++;
+            curs_loc = line_loc * 80;
+            video_loc = (unsigned char*) VIDEO_MEM + (curs_loc*2);
         }
         else {
-            VIDEO_LOC[0] = *str;
-            VIDEO_LOC[1] = WF_BB;
-            VIDEO_LOC+=2;
-            CURS_LOC++;
+            video_loc[0] = *str;
+            video_loc[1] = WF_BB;
+            video_loc+=2;
+            curs_loc++;
         }
         str++;
     }
-    outb(0x0F, 0x3D4);
-    outb(CURS_LOC & 0x00FF, 0x3D5);
-    outb(0x0E, 0x3D4);
-    outb(CURS_LOC & 0xFF00, 0x3D5);
+    if (curs_enable) {
+        outb(0x3D4, 0x0F);
+        outb(0x3D5, curs_loc & 0x00FF);
+        outb(0x3D4, 0x0E);
+        outb(0x3D5, curs_loc & 0xFF00);
+    }
+}
+
+void disable_cursor() {
+    outb(0x3D4, 0x0A);
+    outb(0x3D5, 0x20); // set bit 5 00100000
+    curs_enable = 0;
+}
+
+void enable_cursor() {
+    // Enable Cursor
+    outb(0x3D4, 0x0A);
+    outb(0x3D5, 0x0E); // unset bit 5, bits 0-4 specifies the scan line for the cursor to begin
+    // Update Position
+    outb(0x3D4, 0x0F);
+    outb(0x3D5, curs_loc & 0x00FF);
+    outb(0x3D4, 0x0E);
+    outb(0x3D5, curs_loc & 0xFF00);
+    curs_enable = 1;
 }

@@ -7,3 +7,5 @@
 
 void reset_output();
 void print(const char* str);
+void disable_cursor();
+void enable_cursor();
