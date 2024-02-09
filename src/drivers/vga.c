@@ -21,7 +21,7 @@ void reset_output() {
     outb(VGA_DATA,    0); // Sets the high byte of position
 }
 
-void print(const char* str) {
+void kprint_8024(const char* str) {
     unsigned char* video_loc = (unsigned char*) VIDEO_MEM + (curs_loc*2);
     while ((*str)!=0) {
         if (*str == '\n') {
