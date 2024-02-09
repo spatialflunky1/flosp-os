@@ -1,0 +1,7 @@
+80x24 Text Mode Functions
+--------------------------
+reset_output_8024()
+    Resets the display to a blank black screen
+kprint_8024(const char* str)
+disable_cursor()
+enable cursor()

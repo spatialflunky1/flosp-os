@@ -5,7 +5,7 @@ unsigned char line_loc = 0;
 unsigned short curs_loc = 0;
 unsigned short curs_enable = 1;
 
-void reset_output() {
+void reset_output_8024() {
     // Fill screen with blank chars
     unsigned char* VIDEO_LOC = (unsigned char*) VIDEO_MEM;
     // 80x25 columns

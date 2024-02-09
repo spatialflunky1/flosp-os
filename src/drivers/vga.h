@@ -7,7 +7,7 @@
 #define VGA_CTRL 0x3D4
 #define VGA_DATA 0x3D5
 
-void reset_output();
+void reset_output_8024();
 void kprint_8024(const char* str);
 void disable_cursor();
 void enable_cursor();
