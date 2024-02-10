@@ -1,7 +1,11 @@
-80x24 Text Mode Functions
+80x25 Text Mode Functions
 --------------------------
-reset_output_8024()
-    Resets the display to a blank black screen
-kprint_8024(const char* str)
+clear_output_8025()
+    Clears the display to a blank black screen
+kprint_8025(const char* str)
 disable_cursor()
 enable cursor()
+set_cursor_pos(unsigned short pos)
+    Position is a linear value (0: top, 80*25-1: bottom right)
+scroll_down_8025()
+    Scrolls the text onscreen "down" (moves up)

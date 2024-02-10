@@ -1,0 +1,2 @@
+memcpy(unsigned char* source, unsigned char* dest, unsigned int nbytes)
+    Copies nbytes from source to dest
