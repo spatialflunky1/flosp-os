@@ -1,5 +1,4 @@
 #include "vga.h"
-#include <inttypes.h>
 
 // Global Vars
 unsigned char line_loc = 0;
