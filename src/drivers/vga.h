@@ -6,7 +6,7 @@
 #endif
 
 #define VIDEO_8025_MEM 0xB8000
-#define VIDEO_8025_MEM_END VIDEO_8025_MEM+(80*25*2)-2
+#define VIDEO_8025_MEM_END VIDEO_8025_MEM+(ROWS*COLS*2)-2
 #define ROWS 25
 #define COLS 80
 #define WF_BB 0x0F
