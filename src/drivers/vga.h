@@ -13,9 +13,9 @@
 #define VGA_CTRL 0x3D4
 #define VGA_DATA 0x3D5
 
-void clear_output_8025();
+void clear_output_8025(void);
 void kprint_8025(const char* str);
-void disable_cursor();
-void enable_cursor();
+void disable_cursor(void);
+void enable_cursor(void);
 void set_cursor_pos(unsigned short pos);
-void scroll_down_8025();
+void scroll_down_8025(void);
