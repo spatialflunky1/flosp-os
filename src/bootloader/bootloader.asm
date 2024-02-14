@@ -108,7 +108,7 @@ long_mode_begin:
     call print_64
     mov rbx,kernel_load_msg
     call print_64
-
+    
     call KERNEL_OFFSET
 
     halt64: hlt
