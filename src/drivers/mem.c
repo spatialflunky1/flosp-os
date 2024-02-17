@@ -1,4 +1,6 @@
-void memcpy(unsigned char* source, unsigned char* dest, unsigned int nbytes) {
+#include <drivers/mem.h>
+
+void memcpy(ui8_t* source, ui8_t* dest, ui32_t nbytes) {
     for (int i = 0; i < nbytes; i++) {
         *(dest + i) = *(source + i);
     }

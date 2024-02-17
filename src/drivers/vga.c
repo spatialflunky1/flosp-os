@@ -1,15 +1,15 @@
-#include "vga.h"
+#include <drivers/vga.h>
 
 // Global Vars
-unsigned char line_loc = 0;
-unsigned short curs_loc = 0;
-unsigned short curs_enable = 1;
+ui8_t line_loc = 0;
+ui16_t curs_loc = 0;
+ui16_t curs_enable = 1;
 
 void clear_output_8025() {
     // Fill screen with blank chars
-    unsigned char* video_loc = (unsigned char*) VIDEO_8025_MEM;
+    ui8_t* video_loc = (ui8_t*) VIDEO_8025_MEM;
     // 80x25 columns
-    for (int i=0; i<80*25; i++) {
+    for (ui16_t i=0; i<80*25; i++) {
         video_loc[0] = ' ';
         video_loc[1] = WF_BB;
         video_loc+=2;
@@ -20,18 +20,18 @@ void clear_output_8025() {
     }
 }
 
-void kputchar_8025(const char c, unsigned char color, unsigned char* video_loc) {
+void kputchar_8025(const char c, ui8_t color, ui8_t* video_loc) {
     video_loc[0] = c;
     video_loc[1] = color;
 }
 
 void kprint_8025(const char* str) {
-    unsigned char* video_loc = (unsigned char*) VIDEO_8025_MEM + (curs_loc*2);
+    ui8_t* video_loc = (ui8_t*) VIDEO_8025_MEM + (curs_loc*2);
     while ((*str)!=0) {
         if (*str == '\n') {
             line_loc++;
             curs_loc = line_loc * COLS;
-            video_loc = (unsigned char*) VIDEO_8025_MEM + (curs_loc*2);
+            video_loc = (ui8_t*) VIDEO_8025_MEM + (curs_loc*2);
         }
         else {
             kputchar_8025(*str, WF_BB, video_loc);
@@ -41,7 +41,7 @@ void kprint_8025(const char* str) {
         if (curs_loc >= (ROWS*COLS)) {
             line_loc--;
             scroll_down_8025();
-            video_loc = (unsigned char*) VIDEO_8025_MEM + (curs_loc*2);
+            video_loc = (ui8_t*) VIDEO_8025_MEM + (curs_loc*2);
         }
         str++;
     }
@@ -50,14 +50,24 @@ void kprint_8025(const char* str) {
     }
 }
 
-void kprint_num_8025(unsigned int num) {
-    unsigned int tmp = num;
-    unsigned char* video_loc = (unsigned char*) VIDEO_8025_MEM + (curs_loc*2);
+void kprint_num_8025(ui64_t num) {
+    ui64_t tmp = num;
+    char   char_stack[ui64_t_max_digits];
+    i8_t   stack_top = -1;
+    ui8_t* video_loc = (ui8_t*) VIDEO_8025_MEM + (curs_loc*2);
     while (tmp != 0) {
-        kputchar_8025((char)((tmp%10)+48), WF_BB, video_loc);
+        stack_top++;
+        char_stack[stack_top] = (char)((tmp%10)+48);
         tmp /= 10;
+    }
+    while (stack_top >= 0) {
+        kputchar_8025(char_stack[stack_top], WF_BB, video_loc);
         video_loc+=2;
         curs_loc++;
+        stack_top--;
+    }
+    if (curs_enable) {
+        set_cursor_pos(curs_loc);
     }
 }
 
@@ -76,22 +86,22 @@ void enable_cursor() {
     curs_enable = 1;
 }
 
-void set_cursor_pos(unsigned short pos) {
+void set_cursor_pos(ui16_t pos) {
     outb(VGA_CTRL, 0x0F);                           // Sets 0x3D5 to hold the low byte
-    outb(VGA_DATA, (unsigned char)(pos & 0x00FF));  // Set the low byte of position
+    outb(VGA_DATA, (ui8_t)(pos & 0x00FF));  // Set the low byte of position
     outb(VGA_CTRL, 0x0E);                           // Sets 0x3D5 to hold the high byte1 
-    outb(VGA_DATA, (unsigned char)(pos >> 8));      // Sets the high byte of position
+    outb(VGA_DATA, (ui8_t)(pos >> 8));      // Sets the high byte of position
 }
 
 void scroll_down_8025() {
-    unsigned char* video_loc = (unsigned char*) VIDEO_8025_MEM + (COLS*2); // start at 2nd line
-    for (int i = 0; i < ROWS-1; i++) {
+    ui8_t* video_loc = (ui8_t*) VIDEO_8025_MEM + (COLS*2); // start at 2nd line
+    for (ui16_t i = 0; i < ROWS-1; i++) {
         memcpy(video_loc, video_loc-(COLS*2), COLS*2);
         video_loc+=(COLS*2); // advance 1 row
     }
     // blank last line
-    video_loc = (unsigned char*) VIDEO_8025_MEM + (COLS*(ROWS-1)*2);
-    for (int i = 0; i < COLS; i++) {
+    video_loc = (ui8_t*) VIDEO_8025_MEM + (COLS*(ROWS-1)*2);
+    for (ui8_t i = 0; i < COLS; i++) {
         video_loc[0] = 0;
         video_loc+=2;
     }

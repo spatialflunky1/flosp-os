@@ -1,22 +1,26 @@
-#include "idt.h"
+#include <kernel/idt.h>
 
-void exception_handler(cpu_status_t* cpu_status) {
+cpu_status_t* exception_handler(cpu_status_t* cpu_status) {
     switch (cpu_status->int_vector) {
         case 13:
             kprint_8025("General Protection Fault\n");
             break;
+        case 14:
+            kprint_8025("Page Fault\n");
+            break;
         default:
-            kprint_8025("Unexpected Fault\n");
+            kprint_8025("Unexpected Fault\n"); 
             break;
     }
     if (cpu_status->error) {
         __asm__ volatile ("cli; hlt");
     }
+    return cpu_status;
 }
 
-void idt_set_descriptor(uint8_t vect, void* isr, uint8_t flags) {
+void idt_set_descriptor(ui8_t vect, void* isr, ui8_t flags) {
     idt_entry_t* descriptor = &idt[vect];
-    uint64_t isr_addr = (uint64_t)isr;
+    ui64_t isr_addr = (ui64_t)isr;
     descriptor->isr_low    = isr_addr & 0xFFFF;
     descriptor->kernel_cs  = 0x08;
     descriptor->ist        = 0;
@@ -29,7 +33,7 @@ void idt_set_descriptor(uint8_t vect, void* isr, uint8_t flags) {
 void idt_init() {
     idtr.base = &idt[0];
     idtr.limit = sizeof(idt_entry_t) * MAX_IDT_ENTRIES - 1;
-    for (uint8_t vect = 0; vect < 32; vect++) {
+    for (ui8_t vect = 0; vect < 32; vect++) {
         idt_set_descriptor(vect, isr_stub_table[vect], 0x8E); // 1 00 0(8) 1110(E)
     }
     __asm__ volatile ("lidt %0" :: "m"(idtr));

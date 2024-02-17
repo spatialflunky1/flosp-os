@@ -1,8 +1,0 @@
-Flosp uses the traditional System V calling convention used with GCC
-
-All registers are conserved except for ax/rax which is the register for returning
-values.
-
-result,   1st   ,   2nd   ,   3rd       4th       5th       6th
------- --------- --------- --------- --------- --------- ---------
- rax      rdi       rsi       rdx       r10       r8        r9

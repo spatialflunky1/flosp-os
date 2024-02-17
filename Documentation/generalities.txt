@@ -6,3 +6,24 @@ PML4T - 0x1000
 PDPT  - 0x2000
 PDT   - 0x3000
 PT    - 0x4000 
+
+
+
+
+Flosp uses the traditional System V calling convention used with GCC
+
+result,   1st   ,   2nd   ,   3rd       4th       5th       6th
+------ --------- --------- --------- --------- --------- ---------
+ rax      rdi       rsi       rdx       r10       r8        r9
+
+
+
+
+ DEBUG_FILTER: filters out the level of messages printed
+ --------------------------------------------------------
+ 0: None (All messages printed) (default)
+ 1: Info
+ 2: Warning
+ 3: Error
+ 4: Critical
+ 5: All (No messages printed)

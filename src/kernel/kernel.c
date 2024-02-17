@@ -1,12 +1,17 @@
-#include "kernel.h"
+#include <kernel/kernel.h>
 
 // Global Vars 
 
 int main(void) {
     clear_output_8025();
     //disable_cursor();
-    kprint_8025("Kernel flosp-"KVER" loaded\n");
+    #if DEBUG_FILTER < FILTER_ALL
+        kprint_8025("Kernel flosp-"KVER" loaded\n");
+    #endif
     idt_init();
+    #if DEBUG_FILTER < FILTER_INFO
+        kprint_8025("Interrupts enabled\n");
+    #endif
     // Halt execution
     while(1) {
         __asm__ volatile ("cli; hlt");

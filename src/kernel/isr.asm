@@ -10,6 +10,7 @@ isr_stub_%+%1:
     push rdi
     mov rdi,rsp
     call exception_handler
+    mov rsp,rax
     pop rdi
     add rsp,16 ; advance the stack by 2
     iretq
@@ -22,6 +23,7 @@ isr_stub_%+%1:
     push rdi
     mov rdi,rsp
     call exception_handler
+    mov rsp,rax
     pop rdi
     add rsp,16 ; advance the stack by 2
     iretq
