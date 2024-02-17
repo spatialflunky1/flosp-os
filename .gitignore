@@ -10,3 +10,6 @@ bochsrc
 # Iso
 iso_dir/
 *.iso
+
+# Bear generated file for clangd
+compile_commands.json
