@@ -31,7 +31,7 @@ bin/kernel/kernel.bin: obj/bootloader/kernel_entry.o ${OBJ} obj/kernel/isr.o
 	ld -o $@ -Ttext 0x8400 $^ --oformat binary
 
 $(OBJ): obj/%.o: src/%.c ${C_HEA}
-	gcc -ffreestanding -Iinc/ -c $< -o $@
+	gcc -ffreestanding -fno-stack-protector -Iinc/ -c $< -o $@
 
 obj/bootloader/kernel_entry.o: src/bootloader/kernel_entry.asm
 	nasm $< -f elf64 -o $@
