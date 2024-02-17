@@ -1,4 +1,3 @@
-#include "drivers/vga.h"
 #include <kernel/kernel.h>
 
 // Global Vars 
