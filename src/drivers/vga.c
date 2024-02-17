@@ -20,6 +20,11 @@ void clear_output_8025() {
     }
 }
 
+void kputchar_8025(const char c, unsigned char color, unsigned char* video_loc) {
+    video_loc[0] = c;
+    video_loc[1] = color;
+}
+
 void kprint_8025(const char* str) {
     unsigned char* video_loc = (unsigned char*) VIDEO_8025_MEM + (curs_loc*2);
     while ((*str)!=0) {
@@ -29,8 +34,7 @@ void kprint_8025(const char* str) {
             video_loc = (unsigned char*) VIDEO_8025_MEM + (curs_loc*2);
         }
         else {
-            video_loc[0] = *str;
-            video_loc[1] = WF_BB;
+            kputchar_8025(*str, WF_BB, video_loc);
             video_loc+=2;
             curs_loc++;
         }
@@ -43,6 +47,17 @@ void kprint_8025(const char* str) {
     }
     if (curs_enable) {
         set_cursor_pos(curs_loc);
+    }
+}
+
+void kprint_num_8025(unsigned int num) {
+    unsigned int tmp = num;
+    unsigned char* video_loc = (unsigned char*) VIDEO_8025_MEM + (curs_loc*2);
+    while (tmp != 0) {
+        kputchar_8025((char)((tmp%10)+48), WF_BB, video_loc);
+        tmp /= 10;
+        video_loc+=2;
+        curs_loc++;
     }
 }
 

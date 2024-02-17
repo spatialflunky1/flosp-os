@@ -45,3 +45,6 @@ obj/kernel/isr.o: src/kernel/isr.asm
 clean:
 	rm -f *.iso
 	rm -rf iso_dir obj bin
+
+qemu:
+	qemu-system-x86_64 -cdrom flosp.iso

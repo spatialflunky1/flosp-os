@@ -1,11 +1,8 @@
-To break away from the traditional calling conventions of Unix and Windows
-Flosp will have its own standard calling convention as listed below. This
-calling convention is subject to change as the operating system grows in
-development (ex. floating point parameters: xmm)
+Flosp uses the traditional System V calling convention used with GCC
 
 All registers are conserved except for ax/rax which is the register for returning
 values.
 
-result,   1st   ,   2nd   ,   3rd   
------- --------- --------- ---------
- rax      rbx       rcx       rdx
+result,   1st   ,   2nd   ,   3rd       4th       5th       6th
+------ --------- --------- --------- --------- --------- ---------
+ rax      rdi       rsi       rdx       r10       r8        r9

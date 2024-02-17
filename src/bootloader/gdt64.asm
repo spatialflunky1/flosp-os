@@ -10,7 +10,7 @@ gdt64_code: ; code segment descriptor
     ;     (1: present) (00: privilege) (1: descriptor type)
     ; type flags: 1010b
     ;     (1: code) (0: conforming) (1: readable) (0: accessed)
-    ; 2nd flags : 1100b
+    ; 2nd flags : 1010b
     ;     (1: granularity) (0: 32-bit default) (1: 64-bit segment) (0: AVL/availiable for system use)
     dw 0xffff    ; limit (bits 0-15)
     dw 0x0       ; base  (bits 0-15)
@@ -36,7 +36,7 @@ gdt64_data: ; data segment descriptor
 
 gdt64_tss:
     dd 0x00000068
-    dd 0x00CF8900
+    dd 0x00CF8900 
 
 gdt64_end: ; start and end label used in calculations
 
