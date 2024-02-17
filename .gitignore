@@ -11,5 +11,6 @@ bochsrc
 iso_dir/
 *.iso
 
-# Bear generated file for clangd
+# clangd
 compile_commands.json
+.cache/
