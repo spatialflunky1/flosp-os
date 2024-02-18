@@ -5,11 +5,11 @@
 int main(void) {
     clear_output_8025();
     //disable_cursor();
-    #if DEBUG_FILTER < FILTER_ALL
+    #if MESSAGE_FILTER < FILTER_INFO
         kprint_8025("Kernel flosp-"KVER" loaded\n");
     #endif
     idt_init();
-    #if DEBUG_FILTER < FILTER_INFO
+    #if MESSAGE_FILTER < FILTER_INFO
         kprint_8025("Interrupts enabled\n");
     #endif
     // Halt execution

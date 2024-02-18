@@ -3,6 +3,7 @@
 
 #include <drivers/vga.h>
 #include <kernel/datatypes.h>
+#include <kernel/message.h>
 
 #define MAX_IDT_ENTRIES 256
 

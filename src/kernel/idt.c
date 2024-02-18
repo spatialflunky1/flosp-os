@@ -1,17 +1,19 @@
 #include <kernel/idt.h>
 
 cpu_status_t* exception_handler(cpu_status_t* cpu_status) {
-    switch (cpu_status->int_vector) {
-        case 13:
-            kprint_8025("General Protection Fault\n");
-            break;
-        case 14:
-            kprint_8025("Page Fault\n");
-            break;
-        default:
-            kprint_8025("Unexpected Fault\n"); 
-            break;
-    }
+    #if MESSAGE_FILTER < FILTER_CRITICAL
+        switch (cpu_status->int_vector) {
+            case 13:
+                kprint_8025("General Protection Fault\n");
+                break;
+            case 14:
+                kprint_8025("Page Fault\n");
+                break;
+            default:
+                kprint_8025("Unexpected Fault\n"); 
+                break;
+        }
+    #endif
     if (cpu_status->error) {
         __asm__ volatile ("cli; hlt");
     }
