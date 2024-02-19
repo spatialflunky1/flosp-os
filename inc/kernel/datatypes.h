@@ -12,6 +12,7 @@
 #define i64_t long
 
 
-#define ui64_t_max_digits 20
+#define UI64_T_MAX_DEC_DIGITS 20
+#define UI64_T_MAX_HEX_DIGITS 16
 
 #endif

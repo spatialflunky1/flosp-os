@@ -51,14 +51,37 @@ void kprint_8025(const char* str) {
 }
 
 void kprint_num_8025(ui64_t num) {
-    ui64_t tmp = num;
-    char   char_stack[ui64_t_max_digits];
-    i8_t   stack_top = -1;
     ui8_t* video_loc = (ui8_t*) VIDEO_8025_MEM + (curs_loc*2);
-    while (tmp != 0) {
+    char   char_stack[UI64_T_MAX_DEC_DIGITS];
+    i8_t   stack_top = -1;
+    while (num != 0) {
         stack_top++;
-        char_stack[stack_top] = (char)((tmp%10)+48);
-        tmp /= 10;
+        char_stack[stack_top] = (char)((num%10)+48);
+        num /= 10;
+    }
+    while (stack_top >= 0) {
+        kputchar_8025(char_stack[stack_top], WF_BB, video_loc);
+        video_loc+=2;
+        curs_loc++;
+        stack_top--;
+    }
+    if (curs_enable) {
+        set_cursor_pos(curs_loc);
+    }
+}
+
+void kprint_hex_8025(ui64_t num) {
+    kprint_8025("0x");
+    ui8_t* video_loc = (ui8_t*) VIDEO_8025_MEM + (curs_loc*2);
+    char   tmp;
+    char   char_stack[UI64_T_MAX_HEX_DIGITS];
+    i8_t   stack_top = -1;
+    while (num != 0) {
+        tmp = (char)(num & 0xF);
+        tmp = (tmp >= 10) ? tmp+55 : tmp+48;
+        stack_top++;
+        char_stack[stack_top] = tmp;
+        num /= 16;
     }
     while (stack_top >= 0) {
         kputchar_8025(char_stack[stack_top], WF_BB, video_loc);

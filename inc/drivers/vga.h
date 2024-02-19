@@ -17,6 +17,7 @@ void clear_output_8025(void);
 void kputchar_8025(const char c, ui8_t color, ui8_t* video_loc);
 void kprint_8025(const char* str);
 void kprint_num_8025(ui64_t num);
+void kprint_hex_8025(ui64_t num);
 void disable_cursor(void);
 void enable_cursor(void);
 void set_cursor_pos(ui16_t pos);

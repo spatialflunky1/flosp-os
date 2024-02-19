@@ -10,7 +10,9 @@ cpu_status_t* exception_handler(cpu_status_t* cpu_status) {
                 kprint_8025("Page Fault\n");
                 break;
             default:
-                kprint_8025("Unexpected Fault\n"); 
+                kprint_8025("Unexpected Fault: ");
+                kprint_hex_8025(cpu_status->int_vector);
+                kprint_8025("\n");
                 break;
         }
     #endif

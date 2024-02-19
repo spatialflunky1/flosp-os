@@ -14,7 +14,7 @@ int main(void) {
     #endif
     // Halt execution
     while(1) {
-        __asm__ volatile ("cli; hlt");
+        __asm__ volatile ("hlt");
     }
     return 1; // In theory the kernel should never return, so if it does it will on error
 }
