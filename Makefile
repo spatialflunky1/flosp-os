@@ -1,11 +1,11 @@
-C_SRC = $(wildcard src/kernel/*.c src/drivers/*.c)
-C_HEA = $(wildcard inc/kernel/*.h inc/drivers/*.h)
+C_SRC = $(wildcard src/kernel/*.c src/drivers/*.c src/cpu/*.c)
+C_HEA = $(wildcard inc/kernel/*.h inc/drivers/*.h inc/cpu/*.h)
 OBJ = $(C_SRC:src/%.c=obj/%.o)
 
 all: obj bin flosp.iso
 
 obj:
-	mkdir -p obj/{bootloader,kernel,drivers}
+	mkdir -p obj/{bootloader,kernel,drivers,cpu}
 
 bin:
 	mkdir -p bin/{bootloader,kernel}
@@ -27,7 +27,7 @@ iso_dir/flosp.bin: bin/bootloader/boot.bin bin/kernel/kernel.bin
 bin/bootloader/boot.bin: src/bootloader/bootloader.asm
 	./bootloader_build.sh $^ $@
 
-bin/kernel/kernel.bin: obj/bootloader/kernel_entry.o ${OBJ} obj/kernel/isr.o
+bin/kernel/kernel.bin: obj/bootloader/kernel_entry.o ${OBJ} obj/cpu/isr.o
 	ld -o $@ -Ttext 0x8400 $^ --oformat binary
 
 $(OBJ): obj/%.o: src/%.c ${C_HEA}
@@ -39,7 +39,7 @@ obj/bootloader/kernel_entry.o: src/bootloader/kernel_entry.asm
 obj/kernel/kernel.o: src/kernel/kernel.c inc/kernel/kernel.h
 	./kernel_build.sh $@ $^
 
-obj/kernel/isr.o: src/kernel/isr.asm
+obj/cpu/isr.o: src/cpu/isr.asm
 	nasm $< -f elf64 -o $@
 
 clean:

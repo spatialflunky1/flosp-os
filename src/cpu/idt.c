@@ -1,4 +1,4 @@
-#include <kernel/idt.h>
+#include <cpu/idt.h>
 
 cpu_status_t* exception_handler(cpu_status_t* cpu_status) {
     #if MESSAGE_FILTER < FILTER_CRITICAL
