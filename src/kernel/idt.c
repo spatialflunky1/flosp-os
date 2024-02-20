@@ -17,7 +17,7 @@ cpu_status_t* exception_handler(cpu_status_t* cpu_status) {
         }
     #endif
     if (cpu_status->error) {
-        __asm__ volatile ("cli; hlt");
+        halt();
     }
     return cpu_status;
 }

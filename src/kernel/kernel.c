@@ -1,7 +1,5 @@
 #include <kernel/kernel.h>
 
-// Global Vars 
-
 int main(void) {
     clear_output_8025();
     //disable_cursor();
@@ -14,7 +12,7 @@ int main(void) {
     #endif
     // Halt execution
     while(1) {
-        __asm__ volatile ("hlt");
+        halt();    
     }
     return 1; // In theory the kernel should never return, so if it does it will on error
 }
