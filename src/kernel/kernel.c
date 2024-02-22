@@ -3,16 +3,13 @@
 int main(void) {
     clear_output_8025();
     //disable_cursor();
-    #if MESSAGE_FILTER < FILTER_INFO
-        kprint_8025("Kernel flosp-"KVER" loaded\n");
-    #endif
+    kern_log(FILTER_INFO, "Kernel flosp-"KVER" loaded");
     idt_init();
-    #if MESSAGE_FILTER < FILTER_INFO
-        kprint_8025("Interrupts enabled\n");
-    #endif
+    kern_log(FILTER_INFO, "Interrupts enabled");
     // Halt execution
     while(1) {
-        halt();    
+        halt();
+        //__asm__ volatile ("hlt");
     }
     return 1; // In theory the kernel should never return, so if it does it will on error
 }

@@ -1,21 +1,19 @@
 #include <cpu/idt.h>
 
 cpu_status_t* exception_handler(cpu_status_t* cpu_status) {
-    #if MESSAGE_FILTER < FILTER_CRITICAL
-        switch (cpu_status->int_vector) {
-            case 13:
-                kprint_8025("General Protection Fault\n");
-                break;
-            case 14:
-                kprint_8025("Page Fault\n");
-                break;
-            default:
-                kprint_8025("Unexpected Fault: ");
-                kprint_hex_8025(cpu_status->int_vector);
-                kprint_8025("\n");
-                break;
-        }
-    #endif
+    switch (cpu_status->int_vector) {
+        case 13:
+            kern_log(FILTER_CRITICAL, "General Protection Fault");
+            break;
+        case 14:
+            kern_log(FILTER_CRITICAL, "Page Fault");
+            break;
+        default:
+            kprint_8025("Unexpected Fault: ");
+            kprint_hex_8025(cpu_status->int_vector);
+            kprint_8025("\n");
+            break;
+    }
     if (cpu_status->error) {
         halt();
     }
