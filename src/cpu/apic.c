@@ -20,6 +20,7 @@ void disable_pic8259() {
     outb(PIC_DATA_SLAVE, ICW_3_Sl);
     outb(PIC_DATA_MASTER, ICW_4);
     outb(PIC_DATA_SLAVE, ICW_4);
+    // PIC Interrupts were already masked when enabling Interrupts 0-31
 }
 
 void lapic_set_base(ui64_t base) {
