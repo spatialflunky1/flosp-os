@@ -4,9 +4,12 @@
 #include <drivers/vga.h>
 #include <kernel/datatypes.h>
 #include <kernel/message.h>
-#include <cpu/cpu.h>
+#include <kernel/power_mgmt.h>
 
 #define MAX_IDT_ENTRIES 256
+
+#define PIC_DATA_MASTER 0x21
+#define PIC_DATA_SLAVE  0xA1
 
 extern void* isr_stub_table[];
 
@@ -16,7 +19,7 @@ typedef struct {
     ui16_t kernel_cs;  // Segment selector that is loaded into CS
     ui8_t  ist;        // Interrupt Stack Table offset, will be set 0 to disable the IST mechanism
     ui8_t  attributes; // bits 0-3: Gate type, (0xE: interrupt gate
-                               //                 0xF: trap gate)
+                               //               0xF: trap gate)
                                // bit    4: Reserved (set 0)
                                // bits 5-6: DPL, defines accessible CPU privilege levels
                                // bit    7: Present (must be 1)
@@ -34,6 +37,7 @@ typedef struct {
     ui64_t rdi;
     ui64_t int_vector;
     ui64_t error;
+    ui64_t error_code;
 
     ui64_t iretq_rip;
     ui64_t iretq_cs;
@@ -42,13 +46,26 @@ typedef struct {
     ui64_t iretq_ss;
 } cpu_status_t;
 
+typedef struct {
+    ui64_t rdi;
+    ui64_t irq_vector;
+
+    ui64_t iretq_rip;
+    ui64_t iretq_cs;
+    ui64_t iretq_flags;
+    ui64_t iretq_rsp;
+    ui64_t iretq_ss;
+} cpu_status_irq_t; // same as non-irq just no error
+
 // Var definitions
 __attribute__((aligned(0x10))) static idt_entry_t idt[MAX_IDT_ENTRIES]; // idt: array of idt entries
 static idtr_t idtr;
 
 // Function definitions
 cpu_status_t* exception_handler(cpu_status_t* cpu_status);
+cpu_status_irq_t* irq_handler(cpu_status_irq_t* cpu_status);
 void idt_set_descriptor(ui8_t vect, void* isr, ui8_t flags);
+void mask_pic_interrupts();
 void idt_init(void);
 
 #endif

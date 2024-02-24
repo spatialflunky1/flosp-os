@@ -13,6 +13,8 @@
 #define VGA_CTRL 0x3D4
 #define VGA_DATA 0x3D5
 
+extern ui16_t curs_loc;
+
 void clear_output_8025(void);
 void kputchar_8025(const char c, ui8_t color, ui8_t* video_loc);
 void kprint_8025(const char* str);

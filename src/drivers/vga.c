@@ -54,6 +54,10 @@ void kprint_num_8025(ui64_t num) {
     ui8_t* video_loc = (ui8_t*) VIDEO_8025_MEM + (curs_loc*2);
     char   char_stack[UI64_T_MAX_DEC_DIGITS];
     i8_t   stack_top = -1;
+    if (num == 0) {
+        stack_top++;
+        char_stack[stack_top] = '0';
+    }
     while (num != 0) {
         stack_top++;
         char_stack[stack_top] = (char)((num%10)+48);
@@ -76,6 +80,10 @@ void kprint_hex_8025(ui64_t num) {
     char   tmp;
     char   char_stack[UI64_T_MAX_HEX_DIGITS];
     i8_t   stack_top = -1;
+    if (num == 0) {
+        stack_top++;
+        char_stack[stack_top] = '0';
+    }
     while (num != 0) {
         tmp = (char)(num & 0xF);
         tmp = (tmp >= 10) ? tmp+55 : tmp+48;
