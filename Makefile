@@ -47,4 +47,7 @@ clean:
 	rm -rf iso_dir obj bin
 
 qemu:
-	qemu-system-x86_64 -cdrom flosp.iso
+	qemu-system-x86_64 -cpu qemu64 \
+		-drive if=pflash,format=raw,unit=0,file=bios64.bin \
+		-net none \
+		-cdrom flosp.iso

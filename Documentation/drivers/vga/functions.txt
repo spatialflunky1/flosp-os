@@ -1,11 +1,13 @@
 80x25 Text Mode Functions
 --------------------------
-clear_output_8025()
+void clear_output_8025()
     Clears the display to a blank black screen
-kprint_8025(const char* str)
-disable_cursor()
-enable cursor()
-set_cursor_pos(unsigned short pos)
+void kprint_8025(const char* str)
+void kprint_num_8025(ui64_t num)
+void kprint_hex_8025(ui64_t num)
+void disable_cursor()
+void enable cursor()
+void set_cursor_pos(unsigned short pos)
     Position is a linear value (0: top, 80*25-1: bottom right)
-scroll_down_8025()
+void scroll_down_8025()
     Scrolls the text onscreen "down" (moves up)
