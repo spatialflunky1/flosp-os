@@ -8,7 +8,7 @@ bochsrc
 *.o
 
 # Iso
-iso_dir/
+iso/
 *.iso
 
 # clangd
@@ -17,3 +17,8 @@ compile_commands.json
 
 # UEFI
 bios64.bin
+BOOTX64.EFI
+
+# Binary files
+fat32.img
+kernel.elf
