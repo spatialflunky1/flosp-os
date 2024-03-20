@@ -1,4 +1,5 @@
 # Compiled boot sector code
+# includes the UEFI bios64.bin
 *.bin
 
 # Bochs config file
@@ -16,9 +17,8 @@ compile_commands.json
 .cache/
 
 # UEFI
-bios64.bin
-BOOTX64.EFI
+*.EFI
 
 # Binary files
-fat32.img
-kernel.elf
+*.img
+*.elf
