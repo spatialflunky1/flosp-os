@@ -13,6 +13,13 @@
 #define VGA_CTRL 0x3D4
 #define VGA_DATA 0x3D5
 
+typedef struct {
+    void*  FramebufferPointer;
+    ui32_t HorizontalResolution;
+    ui32_t VerticalResolution;
+    ui32_t PixelsPerScanline;
+} BOOT_VIDEO_MODE_INFO;
+
 extern ui16_t curs_loc;
 
 void clear_output_8025(void);
@@ -24,5 +31,6 @@ void disable_cursor(void);
 void enable_cursor(void);
 void set_cursor_pos(ui16_t pos);
 void scroll_down_8025(void);
+void blank_output(BOOT_VIDEO_MODE_INFO* VideoModeInfo);
 
 #endif

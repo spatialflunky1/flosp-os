@@ -141,3 +141,20 @@ void scroll_down_8025() {
         set_cursor_pos(curs_loc);
     }
 }
+
+#define TEST_COLOR 0x00FF40FF
+void blank_output(BOOT_VIDEO_MODE_INFO* VideoModeInfo) {
+    ui32_t* pos;
+    for (ui64_t row = 0; row < VideoModeInfo->VerticalResolution; row++) {
+        for (ui64_t col = 0; col < VideoModeInfo->HorizontalResolution; col++) {
+            pos = VideoModeInfo->FramebufferPointer;
+            // Set row
+            pos += row * VideoModeInfo->PixelsPerScanline;
+            // Set cold
+            pos += col;
+
+            // Set color
+            *pos = TEST_COLOR;
+        }
+    }
+}

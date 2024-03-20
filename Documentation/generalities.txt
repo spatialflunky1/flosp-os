@@ -1,13 +1,5 @@
 The newline character is Line Feed ('\n', 0Ah)
 
-Page Table Setup:
-------------------
-PML4T - 0x1000
-PDPT  - 0x2000
-PDT   - 0x3000
-PT    - 0x4000 
-
-
 
 
 Flosp uses the traditional System V calling convention used with GCC

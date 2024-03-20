@@ -1,53 +1,45 @@
-C_SRC = $(wildcard src/kernel/*.c src/drivers/*.c src/cpu/*.c)
-C_HEA = $(wildcard inc/kernel/*.h inc/drivers/*.h inc/cpu/*.h)
-OBJ = $(C_SRC:src/%.c=obj/%.o)
+DISK_SIZE=2880
 
-all: obj bin flosp.iso
+all: flosp.iso
 
-obj:
-	mkdir -p obj/{bootloader,kernel,drivers,cpu}
+BOOTX64.EFI:
+	make -C src/bootloader
+	mv src/bootloader/BOOTX64.EFI ./
 
-bin:
-	mkdir -p bin/{bootloader,kernel}
+kernel.elf:
+	make -C src/os
+	mv src/os/kernel.elf ./
 
-flosp.iso: iso_dir iso_dir/flosp.bin
-	mkisofs -V 'flosp' \
-		-o $@ \
-		-b flosp.bin \
-		-no-emul-boot \
-		-boot-load-size 19 \
-		iso_dir/
-
-iso_dir:
-	mkdir -p iso_dir
-
-iso_dir/flosp.bin: bin/bootloader/boot.bin bin/kernel/kernel.bin
-	cat $^ > $@
-
-bin/bootloader/boot.bin: src/bootloader/bootloader.asm
-	./bootloader_build.sh $^ $@
-
-bin/kernel/kernel.bin: obj/bootloader/kernel_entry.o ${OBJ} obj/cpu/isr.o
-	ld -o $@ -Ttext 0x8400 $^ --oformat binary
-
-$(OBJ): obj/%.o: src/%.c ${C_HEA}
-	gcc -ffreestanding -fno-stack-protector -Iinc/ -c $< -o $@
-
-obj/bootloader/kernel_entry.o: src/bootloader/kernel_entry.asm
-	nasm $< -f elf64 -o $@
-
-obj/kernel/kernel.o: src/kernel/kernel.c inc/kernel/kernel.h
-	./kernel_build.sh $@ $^
-
-obj/cpu/isr.o: src/cpu/isr.asm
-	nasm $< -f elf64 -o $@
+flosp.iso: kernel.elf BOOTX64.EFI 
+	dd if=/dev/zero of=./fat32.img bs=1024 count=${DISK_SIZE}
+	# mkfs.fat -F 32 ./fat32.img
+	mformat -i ./fat32.img -f ${DISK_SIZE} ::
+	mkdir mnt
+	sudo su -c "mount -t vfat -o exec,user,rw --source ./fat32.img --target ./mnt && \
+		mkdir -p ./mnt/EFI/BOOT && \
+		cp -v ./BOOTX64.EFI ./mnt/EFI/BOOT && \
+		cp -v ./kernel.elf ./mnt && \
+		umount ./mnt"
+	mkdir iso
+	cp fat32.img iso
+	xorriso -as mkisofs -R -f -e fat32.img -no-emul-boot -o flosp.iso iso
 
 clean:
-	rm -f *.iso
-	rm -rf iso_dir obj bin
+	rm -rf \
+		*.iso \
+		*.img \
+		*.EFI \
+		*.elf \
+		mnt/ \
+		iso/
+	make -C src/bootloader clean
+	make -C src/os clean
 
 qemu:
-	qemu-system-x86_64 -cpu qemu64 \
+	qemu-system-x86_64 \
 		-drive if=pflash,format=raw,unit=0,file=bios64.bin \
 		-net none \
 		-cdrom flosp.iso
+
+wc:
+	wc -l `find src`
