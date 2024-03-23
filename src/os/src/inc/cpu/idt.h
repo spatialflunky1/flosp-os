@@ -65,7 +65,7 @@ static idtr_t idtr;
 cpu_status_t* exception_handler(cpu_status_t* cpu_status);
 cpu_status_irq_t* irq_handler(cpu_status_irq_t* cpu_status);
 void idt_set_descriptor(ui8_t vect, void* isr, ui8_t flags);
-void mask_pic_interrupts();
+void mask_pic_interrupts(void);
 void idt_init(void);
 
 #endif

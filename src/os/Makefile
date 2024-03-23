@@ -1,14 +1,16 @@
-CC := gcc
+CC := clang
 INC_DIR := src/inc
 CFLAGS := \
 		  -ffreestanding \
 		  -fno-stack-protector \
 		  -I${INC_DIR} \
-		  -g
+		  -Wall \
+		  -Wextra \
+		  -Wmissing-prototypes \
+		  -Wstrict-prototypes
 LDFLAGS := \
 		   -ffreestanding \
 		   -nostdlib \
-		   -g3 \
 		   -T src/kernel/kernel.ld
 
 C_SRC = $(wildcard src/kernel/*.c src/drivers/*.c src/cpu/*.c)

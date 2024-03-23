@@ -3,6 +3,6 @@
 
 #include <kernel/message.h>
 
-void halt();
+void halt(void);
 
 #endif

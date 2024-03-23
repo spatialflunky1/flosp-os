@@ -66,8 +66,8 @@ static inline void lapic_write_reg(ui64_t reg, ui32_t val) {
 ui8_t validate_rsdp(void* rsdp_ptr, size_t size); // The last byte of the sum of all bytes needs to equal 0 to pass validation
 void disable_pic8259(void);
 void lapic_set_base(ui64_t base);
-ui64_t lapic_get_base();
-void check_apic();
+ui64_t lapic_get_base(void);
+void check_apic(void);
 void enable_lapic(void);
 
 #endif

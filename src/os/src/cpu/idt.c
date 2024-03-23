@@ -47,12 +47,12 @@ void idt_set_descriptor(ui8_t vect, void* isr, ui8_t flags) {
     descriptor->reserved   = 0;
 }
 
-void mask_pic_interrupts() {
+void mask_pic_interrupts(void) {
     outb(PIC_DATA_MASTER, 0xFF);
     outb(PIC_DATA_SLAVE, 0xFF);
 }
 
-void idt_init() {
+void idt_init(void) {
     idtr.base = &idt[0];
     idtr.limit = sizeof(idt_entry_t) * MAX_IDT_ENTRIES - 1;
     for (ui8_t vect = 0; vect < 32; vect++) {

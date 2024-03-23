@@ -13,6 +13,8 @@
 #define VGA_CTRL 0x3D4
 #define VGA_DATA 0x3D5
 
+#define rgb(r,g,b) (r << 16) | (g << 8) | b
+
 typedef struct {
     void*  FramebufferPointer;
     ui32_t HorizontalResolution;

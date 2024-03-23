@@ -5,7 +5,7 @@ ui8_t line_loc = 0;
 ui16_t curs_loc = 0;
 ui16_t curs_enable = 1;
 
-void clear_output_8025() {
+void clear_output_8025(void) {
     // Fill screen with blank chars
     ui8_t* video_loc = (ui8_t*) VIDEO_8025_MEM;
     // 80x25 columns
@@ -102,13 +102,13 @@ void kprint_hex_8025(ui64_t num) {
     }
 }
 
-void disable_cursor() {
+void disable_cursor(void) {
     outb(VGA_CTRL, 0x0A);
     outb(VGA_DATA, 0x20); // set bit 5 00100000
     curs_enable = 0;
 }
 
-void enable_cursor() {
+void enable_cursor(void) {
     // Enable Cursor
     outb(VGA_CTRL, 0x0A);
     outb(VGA_DATA, 0x0E); // unset bit 5, bits 0-4 specifies the scan line for the cursor to begin
@@ -124,7 +124,7 @@ void set_cursor_pos(ui16_t pos) {
     outb(VGA_DATA, (ui8_t)(pos >> 8));      // Sets the high byte of position
 }
 
-void scroll_down_8025() {
+void scroll_down_8025(void) {
     ui8_t* video_loc = (ui8_t*) VIDEO_8025_MEM + (COLS*2); // start at 2nd line
     for (ui16_t i = 0; i < ROWS-1; i++) {
         memcpy(video_loc, video_loc-(COLS*2), COLS*2);
@@ -142,7 +142,7 @@ void scroll_down_8025() {
     }
 }
 
-#define TEST_COLOR 0x00FF40FF
+#define TEST_COLOR 0x00FF00FF
 void blank_output(BOOT_VIDEO_MODE_INFO* VideoModeInfo) {
     ui32_t* pos;
     for (ui64_t row = 0; row < VideoModeInfo->VerticalResolution; row++) {
@@ -154,7 +154,7 @@ void blank_output(BOOT_VIDEO_MODE_INFO* VideoModeInfo) {
             pos += col;
 
             // Set color
-            *pos = TEST_COLOR;
+            *pos = rgb(0,0,0);
         }
     }
 }

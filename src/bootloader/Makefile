@@ -9,10 +9,14 @@ INC_DIR := src/inc
 
 CFLAGS := -ffreestanding \
 	      -mno-red-zone \
-	      -target x86_64-unknown-windows \
 	      -I${INC_DIR} \
+	      -target x86_64-unknown-windows \
 		  -DDEBUG \
-		  -DINFO
+		  -DINFO \
+		  -Wall \
+		  -Wextra \
+		  -Wmissing-prototypes \
+		  -Wstrict-prototypes
 LDFLAGS := -flavor link \
 		   -subsystem:efi_application \
 		   -entry:efi_main

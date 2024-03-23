@@ -1,6 +1,6 @@
 #include <kernel/kernel.h>
 
-int main(BOOT_INFO* boot_info) {
+void main(BOOT_INFO* boot_info) {
     blank_output(&boot_info->VideoModeInfo);
     //clear_output_8025();
     //disable_cursor();
@@ -14,5 +14,5 @@ int main(BOOT_INFO* boot_info) {
         halt();
         __asm__ volatile ("cli; hlt");
     }
-    return 1; // In theory the kernel should never return, so if it does it will on error
+    return;
 }

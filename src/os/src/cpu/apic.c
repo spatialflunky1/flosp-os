@@ -11,7 +11,7 @@ ui8_t validate_rsdp(void* rsdp_ptr, size_t size) {
     return (sum & 0xFF) == 0;
 }
 
-void disable_pic8259() {
+void disable_pic8259(void) {
     outb(PIC_COMMAND_MASTER, ICW_1);
     outb(PIC_COMMAND_SLAVE, ICW_1);
     outb(PIC_DATA_MASTER, ICW_2_Ma);
@@ -28,11 +28,11 @@ void lapic_set_base(ui64_t base) {
           (base & 0xFFFFF0000) | IA32_APIC_BASE_MSR_ENABLE);
 }
 
-ui64_t lapic_get_base() {
+ui64_t lapic_get_base(void) {
     return rdmsr(IA32_APIC_BASE_MSR) & 0xFFFFFF000;
 }
 
-void check_apic() {
+void check_apic(void) {
     ui32_t edx = cpuid(1) >> 32;
     if ((edx & CPUID_FEAT_EDX_APIC) == 0) {
         kern_log(FILTER_CRITICAL, "APIC Not Supported");
@@ -40,7 +40,7 @@ void check_apic() {
     }
 }
 
-void enable_lapic() {
+void enable_lapic(void) {
     check_apic();
     disable_pic8259();
     lapic_set_base(lapic_get_base());

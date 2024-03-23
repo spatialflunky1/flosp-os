@@ -5,7 +5,7 @@
 
 #define KERNEL_FILEPATH L"\\kernel.elf"
 
-EFI_STATUS get_memory_map(
+static EFI_STATUS get_memory_map(
         EFI_SYSTEM_TABLE* SystemTable,
         void**            MemoryMap,
         UINT64*           MemoryMapSize,
@@ -223,8 +223,15 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable) {
     #ifdef DEBUG
         efi_print(SystemTable, L"Debug: Entering kernel\r\n");
     #endif
+    efi_print(SystemTable, L"Video mode info location: ");
+    efi_printhex(SystemTable, (UINT64)&BootInfo, 1);
+    efi_print(SystemTable, L"\r\n");
     kernel_entry = (void (*)(KERNEL_BOOT_INFO*))*KernelEntryPoint;
-    kernel_entry(&BootInfo);
+    /*
+     * BootInfo address is passed through rdi as the kernel uses the System V calling convention
+     */
+    __asm__ volatile ("mov %0, %%rdi" :: "r"(&BootInfo));
+    kernel_entry(NULL);
     
     return EFI_LOAD_ERROR;
 }
