@@ -9,15 +9,15 @@ cpu_status_t* exception_handler(cpu_status_t* cpu_status) {
             kern_log(FILTER_CRITICAL, "Page Fault");
             break;
         default:
-            kprint_8025("Unexpected Fault: ");
-            kprint_hex_8025(cpu_status->int_vector);
-            kprint_8025("\n");
+            kprint("Unexpected Fault: ");
+            //kprint_hex_8025(cpu_status->int_vector);
+            kprint("\n");
             break;
     }
     if (cpu_status->error) {
-        kprint_8025("Error Code: ");
-        kprint_hex_8025(cpu_status->error_code);
-        kprint_8025("\n");
+        kprint("Error Code: ");
+        //kprint_hex_8025(cpu_status->error_code);
+        kprint("\n");
         halt();
     }
     return cpu_status;
@@ -26,9 +26,9 @@ cpu_status_t* exception_handler(cpu_status_t* cpu_status) {
 cpu_status_irq_t* irq_handler(cpu_status_irq_t* cpu_status) {
     switch (cpu_status->irq_vector) {
         default:
-            kprint_8025("Unexpected IRQ: ");
-            kprint_hex_8025(cpu_status->irq_vector);
-            kprint_8025("\n");
+            kprint("Unexpected IRQ: ");
+            //kprint_hex_8025(cpu_status->irq_vector);
+            kprint("\n");
             break;
     }
     //outb(0xB0, 0);

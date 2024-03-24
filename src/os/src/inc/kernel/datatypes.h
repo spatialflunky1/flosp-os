@@ -16,4 +16,6 @@ typedef signed int __attribute__((__mode__(__DI__))) i64_t;
 #define UI64_T_MAX_DEC_DIGITS 20
 #define UI64_T_MAX_HEX_DIGITS 16
 
+#define NULL (void*)0;
+
 #endif

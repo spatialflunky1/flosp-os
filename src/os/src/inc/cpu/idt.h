@@ -2,6 +2,7 @@
 #define IDT_H
 
 #include <drivers/vga.h>
+#include <drivers/io.h>
 #include <kernel/datatypes.h>
 #include <kernel/message.h>
 #include <kernel/power_mgmt.h>
