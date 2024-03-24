@@ -18,7 +18,7 @@ typedef struct {
 
 static BOOT_VIDEO_MODE_INFO* VideoModeInfo = NULL;
 
-void initialize_video(BOOT_VIDEO_MODE_INFO* VideoModeInfo);
+void initialize_video(BOOT_VIDEO_MODE_INFO* VMI);
 void blank_output(void);
 void kputchar(const unsigned char c);
 void kprint(const char* s);
