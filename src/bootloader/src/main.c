@@ -234,7 +234,6 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable) {
      */
     __asm__ volatile ("mov %0, %%rdi" :: "r"(&BootInfo));
     kernel_entry(NULL);
-    while (1);
     
     return EFI_LOAD_ERROR;
 }
