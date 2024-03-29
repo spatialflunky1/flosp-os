@@ -277,6 +277,12 @@ EFI_STATUS
 
 typedef
 EFI_STATUS
+(*EFI_FILE_GET_POSITION) (
+        IN struct EFI_FILE_PROTOCOL* This,
+        OUT UINT64*                  Position);
+
+typedef
+EFI_STATUS
 (*EFI_FILE_SET_POSITION) (
         IN struct EFI_FILE_PROTOCOL* This,
         IN UINT64                    Position
@@ -392,7 +398,7 @@ typedef struct {
     void*                            Delete;
     EFI_FILE_READ                    Read;
     void*                            Write;
-    void*                            GetPosition;
+    EFI_FILE_GET_POSITION            GetPosition;
     EFI_FILE_SET_POSITION            SetPosition;
     void*                            GetInfo;
     void*                            SetInfo;

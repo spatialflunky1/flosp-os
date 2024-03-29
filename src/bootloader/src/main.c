@@ -117,7 +117,11 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable) {
             efi_print(SystemTable, L"Debug: Failed to open graphics output protocol on the current console\r\n");
         }
     #endif
-
+    
+    /*
+     * Only uncomment to set the graphics mode if necessary
+     * Use bios default for bootloader and set resolution when booted
+     *
     if (GraphicsOutputProtocol != NULL) {
         status = set_graphics_mode(
                 SystemTable, 
@@ -130,6 +134,7 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable) {
             return status;
         }
     }
+    */
 
     // Save graphics info in BootInfo
     BootInfo.VideoModeInfo.FramebufferPointer =
@@ -223,15 +228,13 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable) {
     #ifdef DEBUG
         efi_print(SystemTable, L"Debug: Entering kernel\r\n");
     #endif
-    efi_print(SystemTable, L"Video mode info location: ");
-    efi_printhex(SystemTable, (UINT64)&BootInfo, 1);
-    efi_print(SystemTable, L"\r\n");
     kernel_entry = (void (*)(KERNEL_BOOT_INFO*))*KernelEntryPoint;
     /*
      * BootInfo address is passed through rdi as the kernel uses the System V calling convention
      */
     __asm__ volatile ("mov %0, %%rdi" :: "r"(&BootInfo));
     kernel_entry(NULL);
+    while (1);
     
     return EFI_LOAD_ERROR;
 }

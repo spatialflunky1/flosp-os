@@ -21,13 +21,12 @@ flosp.iso: kernel.elf BOOTX64.EFI
 		cp -v ./kernel.elf ./mnt && \
 		umount ./mnt"
 	mkdir iso
-	cp fat32.img iso
+	mv fat32.img iso
 	xorriso -as mkisofs -R -f -e fat32.img -no-emul-boot -o flosp.iso iso
 
 clean:
 	rm -rf \
 		*.iso \
-		*.img \
 		*.EFI \
 		*.elf \
 		mnt/ \
@@ -35,11 +34,17 @@ clean:
 	make -C src/bootloader clean
 	make -C src/os clean
 
-qemu:
+qemu: all
 	qemu-system-x86_64 \
 		-drive if=pflash,format=raw,unit=0,file=bios64.bin \
 		-net none \
 		-cdrom flosp.iso
 
+qemu-usb: all
+	./qemu-usb.sh
+
 wc:
 	wc -l `find src`
+
+usb: all
+	./usb.sh

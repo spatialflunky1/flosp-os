@@ -168,6 +168,20 @@ EFI_STATUS set_graphics_mode(
         return status;
     }
 
+    // Clear screen
+    status = SystemTable->ConOut->ClearScreen((struct EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL*)SystemTable->ConOut);
+    if (EFI_ERROR(status)) {
+        efi_print(SystemTable, L"Fatal: Error clearing console screen\r\n");
+        return status;
+    }
+
+    // Reset output
+    status = SystemTable->ConOut->Reset((struct EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL*)SystemTable->ConOut, 0);
+    if (EFI_ERROR(status)) {
+        efi_print(SystemTable, L"Fatal: Error resetting console output\r\n");
+        return status;
+    }
+
     return status;
 }
 

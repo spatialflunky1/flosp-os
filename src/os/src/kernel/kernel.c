@@ -10,6 +10,7 @@ void main(BOOT_INFO* boot_info) {
     // Halt execution
     while (1) { 
         halt();
+        // Interrupts cleared halt only as a precaution
         __asm__ volatile ("cli; hlt");
     }
     return;

@@ -110,7 +110,9 @@ EFI_STATUS load_segment(EFI_SYSTEM_TABLE* SystemTable, EFI_FILE_PROTOCOL* Kernel
     EFI_PHYSICAL_ADDRESS ZeroFillStart = 0;
     UINT64 ZeroFillCount = 0;
 
-    // Set kernel file pointer to segment offset
+    #ifdef DEBUG
+        efi_print(SystemTable, L"Debug: Setting kernel file pointer to segment offset\r\n");
+    #endif
     status = KernelImage->SetPosition((struct EFI_FILE_PROTOCOL*)KernelImage, SegmentOffset);
     if (EFI_ERROR(status)) {
         efi_print(SystemTable, L"Fatal: Error setting kernel file pointer position\r\n");

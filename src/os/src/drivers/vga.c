@@ -24,7 +24,7 @@ void blank_output(void) {
         for (ui64_t col = 0; col < VideoModeInfo->HorizontalResolution; col++) {
             pos = VideoModeInfo->FramebufferPointer;
             // Set row
-            pos += row * VideoModeInfo->PixelsPerScanline;
+            pos += row * VideoModeInfo->HorizontalResolution;
             // Set cold
             pos += col;
 
@@ -37,7 +37,7 @@ void blank_output(void) {
 void kputchar(const unsigned char c) {     
     ui32_t* pos = VideoModeInfo->FramebufferPointer;
     // Advance to current line
-    pos += text_line * font_size * VideoModeInfo->PixelsPerScanline;
+    pos += text_line * font_size * VideoModeInfo->HorizontalResolution;
     // Advance to current column
     pos += ((text_col_px)  + 8) - 1; // font width is always 8;
                                       // algorithm starts at the last pixel of the line
@@ -66,7 +66,7 @@ void kputchar(const unsigned char c) {
             pos--;
         }
         ch_addr++;
-        last_pos += VideoModeInfo->PixelsPerScanline;
+        last_pos += VideoModeInfo->HorizontalResolution;
         pos = last_pos;
     }
     text_col_px += 9; // 9 instead of 8 to add a space in between chars printed
