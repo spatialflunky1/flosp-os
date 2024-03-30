@@ -44,9 +44,6 @@ qemu: all
 		--no-reboot \
 		 -no-shutdown
 
-qemu-usb: all
-	./qemu-usb.sh
-
 wc:
 	wc -l `find src`
 
