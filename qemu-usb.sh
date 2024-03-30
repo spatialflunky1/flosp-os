@@ -40,4 +40,5 @@ SELECT="${DISKS[$INDEX]}"
 sudo -E qemu-system-x86_64 \
     -drive if=pflash,format=raw,unit=0,file=bios64.bin \
     -net none \
+    -usb \
     -drive file=$SELECT,format=raw

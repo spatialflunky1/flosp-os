@@ -7,7 +7,7 @@
 ui16_t output_height = BOOT_HEIGHT;
 ui16_t output_width = BOOT_WIDTH;
 // Text info
-ui8_t text_col_px = 0;
+ui16_t text_col_px = 0;
 ui8_t text_line = 0;
 int text_color = rgb(255,255,255);
 // Font info

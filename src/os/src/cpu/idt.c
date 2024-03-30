@@ -55,9 +55,11 @@ void mask_pic_interrupts(void) {
 void idt_init(void) {
     idtr.base = &idt[0];
     idtr.limit = sizeof(idt_entry_t) * MAX_IDT_ENTRIES - 1;
+    // Set reserved interrupts
     for (ui8_t vect = 0; vect < 32; vect++) {
         idt_set_descriptor(vect, isr_stub_table[vect], 0x8E); // 1 00 0(8) 1110(E)
     }
+    // Set IRQs
     for (ui8_t vect = 32; vect < 32+8; vect++) {
         idt_set_descriptor(vect, isr_stub_table[vect], 0x8E);
     }

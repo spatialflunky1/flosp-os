@@ -38,7 +38,11 @@ qemu: all
 	qemu-system-x86_64 \
 		-drive if=pflash,format=raw,unit=0,file=bios64.bin \
 		-net none \
-		-cdrom flosp.iso
+		-cdrom flosp.iso \
+		-d cpu_reset \
+		-d int \
+		--no-reboot \
+		 -no-shutdown
 
 qemu-usb: all
 	./qemu-usb.sh

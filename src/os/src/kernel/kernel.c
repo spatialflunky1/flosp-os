@@ -1,12 +1,17 @@
 #include <kernel/kernel.h>
 
 void main(BOOT_INFO* boot_info) {
+    // Video
     initialize_video(&boot_info->VideoModeInfo);
     kern_log(FILTER_INFO, "Kernel flosp-"KVER" loaded");
-    //idt_init();
-    //kern_log(FILTER_INFO, "Interrupts enabled");
+    // GDT
+    gdt_init();
+    kern_log(FILTER_INFO, "GDT Initialized");
+    // IDT
+    idt_init();
+    kern_log(FILTER_INFO, "IDT Initialized and Interrupts enabled");
     //enable_lapic();
-    //__asm__ volatile ("int $33");
+    //__asm__ volatile ("int $13");
     // Halt execution
     while (1) { 
         halt();

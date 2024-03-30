@@ -24,7 +24,7 @@ obj:
 bin:
 	mkdir -p bin/kernel
 
-kernel.elf: ${OBJ} obj/cpu/isr.o
+kernel.elf: ${OBJ} obj/cpu/isr.o obj/cpu/gdt64.o
 	${CC} -o $@ ${LDFLAGS} $^
 
 obj/%.o: src/%.c
@@ -33,7 +33,7 @@ obj/%.o: src/%.c
 obj/kernel/kernel.o: src/kernel/kernel.c src/inc/kernel/kernel.h
 	./kernel_build.sh "${CC}" "${CFLAGS}" "$<" "$@"
 
-obj/cpu/isr.o: src/cpu/isr.s
+obj/cpu/%.o: src/cpu/%.s
 	nasm $< -f elf64 -o $@
 
 clean:

@@ -1,5 +1,6 @@
 #include <drivers/vga.h>
 #include <cpu/idt.h>
+#include <cpu/gdt.h>
 #include <kernel/message.h>
 #include <kernel/power_mgmt.h>
 #include <cpu/apic.h>
