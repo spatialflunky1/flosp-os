@@ -34,7 +34,7 @@ typedef struct {
     ui16_t isr_mid;    // ISR address mid offset
     ui32_t isr_high;   // ISR address high offset
     ui32_t reserved;   // Set to 0
-} idt_entry_t; // packed : no byte padding
+} idt_entry_t;
 
 typedef struct {
     ui16_t        limit;
