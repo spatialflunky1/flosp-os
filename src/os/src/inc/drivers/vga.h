@@ -22,5 +22,6 @@ void initialize_video(BOOT_VIDEO_MODE_INFO* VMI);
 void blank_output(void);
 void kputchar(const unsigned char c);
 void kprint(const char* s);
+void kprint_hex(ui64_t h, const ui8_t zero_x);
 
 #endif

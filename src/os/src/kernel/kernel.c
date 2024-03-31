@@ -10,13 +10,13 @@ void main(BOOT_INFO* boot_info) {
     // IDT
     idt_init();
     kern_log(FILTER_INFO, "IDT Initialized and Interrupts enabled");
-    //enable_lapic();
-    //__asm__ volatile ("int $13");
+    // LAPIC
+    enable_lapic();
+    kern_log(FILTER_INFO, "APIC Enabled");
+    //__asm__ volatile ("int $33");
     // Halt execution
     while (1) { 
         halt();
-        // Interrupts cleared halt only as a precaution
-        __asm__ volatile ("cli; hlt");
     }
     return;
 }

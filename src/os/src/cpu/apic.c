@@ -44,6 +44,5 @@ void enable_lapic(void) {
     check_apic();
     disable_pic8259();
     lapic_set_base(lapic_get_base());
-    lapic_write_reg(SPURIOUS_VECTOR, lapic_read_reg(SPURIOUS_VECTOR) | 0x100); // Set bit 8, enable local APIC 
-    kern_log(FILTER_INFO, "APIC Enabled");
+    lapic_write_reg(SPURIOUS_VECTOR, lapic_read_reg(SPURIOUS_VECTOR) | 0x100); // Set bit 8, enable local APIC  
 }

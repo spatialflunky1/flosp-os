@@ -10,13 +10,13 @@ cpu_status_t* exception_handler(cpu_status_t* cpu_status) {
             break;
         default:
             kprint("Unexpected Fault: ");
-            //kprint_hex_8025(cpu_status->int_vector);
+            kprint_hex(cpu_status->int_vector, 1);
             kprint("\n");
             break;
     }
     if (cpu_status->error) {
         kprint("Error Code: ");
-        //kprint_hex_8025(cpu_status->error_code);
+        kprint_hex(cpu_status->error_code, 1);
         kprint("\n");
         halt();
     }
@@ -27,7 +27,7 @@ cpu_status_irq_t* irq_handler(cpu_status_irq_t* cpu_status) {
     switch (cpu_status->irq_vector) {
         default:
             kprint("Unexpected IRQ: ");
-            //kprint_hex_8025(cpu_status->irq_vector);
+            kprint_hex(cpu_status->irq_vector, 1);
             kprint("\n");
             break;
     }
