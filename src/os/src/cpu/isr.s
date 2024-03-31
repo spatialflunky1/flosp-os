@@ -1,7 +1,6 @@
 ; Interrupt Service Routines
 [bits 64]
 extern interrupt_handler
-extern PIC_sendEOI
 
 ; Call the interrupt_handler on an error interrupt
 %macro isr_err_stub 1
