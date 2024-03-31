@@ -1,9 +1,9 @@
 ; Interrupt Service Routines
 [bits 64]
-extern exception_handler
-extern irq_handler
+extern interrupt_handler
+extern PIC_sendEOI
 
-; Call the exception_handler on an error interrupt
+; Call the interrupt_handler on an error interrupt
 %macro isr_err_stub 1
 isr_stub_%+%1:
             ; error code is auto pushed here
@@ -11,13 +11,13 @@ isr_stub_%+%1:
     push %1 ; indicate vector
     push rdi
     mov rdi,rsp
-    call exception_handler
+    call interrupt_handler
     mov rsp,rax
     pop rdi
     add rsp,16 ; advance the stack by 2
     iretq
 %endmacro
-; Call the exception_handler on a non-error interrupt
+; Call the interrupt_handler on a non-error interrupt
 %macro isr_no_err_stub 1
 isr_stub_%+%1:
     push 0  ; dummy error code
@@ -25,7 +25,7 @@ isr_stub_%+%1:
     push %1 ; indicates vector
     push rdi
     mov rdi,rsp
-    call exception_handler
+    call interrupt_handler
     mov rsp,rax
     pop rdi
     add rsp,16 ; advance the stack by 2
@@ -34,10 +34,12 @@ isr_stub_%+%1:
 ; Call the irq_handler on an irq interrupt
 %macro irq_stub 1
 irq_stub_%+%1:
-    push %1
+    push 0     ; dummy error code
+    push 0     ; indicates non-error
+    push %1+32 ; indicates vector (offset by first 32 cpu interrupts)
     push rdi
     mov rdi,rsp
-    call irq_handler
+    call interrupt_handler
     mov rsp,rax
     pop rdi
     add rsp,16 ; advance the stack by 2
@@ -77,6 +79,7 @@ isr_no_err_stub 28
 isr_no_err_stub 29
 isr_err_stub    30
 isr_no_err_stub 31
+; IRQs
 irq_stub        0
 irq_stub        1
 irq_stub        2

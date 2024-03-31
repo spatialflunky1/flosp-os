@@ -12,8 +12,10 @@ void main(BOOT_INFO* boot_info) {
     kern_log(FILTER_INFO, "IDT Initialized and Interrupts enabled");
     // LAPIC
     enable_lapic();
-    kern_log(FILTER_INFO, "APIC Enabled");
-    //__asm__ volatile ("int $33");
+    kern_log(FILTER_INFO, "LAPIC Enabled");
+    // Keyboard IRQ test
+    kern_log(FILTER_DEBUG, "Testing IRQ 0x1 (vector 0x21 / 33)");
+    __asm__ volatile ("int $33");
     // Halt execution
     while (1) { 
         halt();

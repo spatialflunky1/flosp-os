@@ -1,6 +1,6 @@
 #include <cpu/idt.h>
 
-cpu_status_t* exception_handler(cpu_status_t* cpu_status) {
+cpu_status_t* interrupt_handler(cpu_status_t* cpu_status) {
     switch (cpu_status->int_vector) {
         case 13:
             kern_log(FILTER_CRITICAL, "General Protection Fault");
@@ -9,7 +9,7 @@ cpu_status_t* exception_handler(cpu_status_t* cpu_status) {
             kern_log(FILTER_CRITICAL, "Page Fault");
             break;
         default:
-            kprint("Unexpected Fault: ");
+            kprint("Unexpected Interrupt: ");
             kprint_hex(cpu_status->int_vector, 1);
             kprint("\n");
             break;
@@ -20,18 +20,12 @@ cpu_status_t* exception_handler(cpu_status_t* cpu_status) {
         kprint("\n");
         halt();
     }
-    return cpu_status;
-}
-
-cpu_status_irq_t* irq_handler(cpu_status_irq_t* cpu_status) {
-    switch (cpu_status->irq_vector) {
-        default:
-            kprint("Unexpected IRQ: ");
-            kprint_hex(cpu_status->irq_vector, 1);
-            kprint("\n");
-            break;
+    // Send EOI to PIC
+    // Also send EOI to slave pic if vector is at or above IRQ 8
+    if (cpu_status->int_vector >= 8+32) {
+        outb(PIC_COMMAND_SLAVE, PIC_EOI);
     }
-    //outb(0xB0, 0);
+    outb(PIC_COMMAND_MASTER, PIC_EOI);
     return cpu_status;
 }
 
@@ -53,6 +47,7 @@ void mask_pic_interrupts(void) {
 }
 
 void idt_init(void) {
+    kern_log(FILTER_DEBUG, "Defining and setting IDT entries");
     idtr.base = &idt[0];
     idtr.limit = sizeof(idt_entry_t) * MAX_IDT_ENTRIES - 1;
     // Set reserved interrupts
@@ -63,7 +58,10 @@ void idt_init(void) {
     for (ui8_t vect = 32; vect < 32+8; vect++) {
         idt_set_descriptor(vect, isr_stub_table[vect], 0x8E);
     }
+    kern_log(FILTER_DEBUG, "Masking PIC interrupts");
     mask_pic_interrupts();
+    kern_log(FILTER_DEBUG, "Loading IDT");
     __asm__ volatile ("lidt %0" :: "m"(idtr));
+    kern_log(FILTER_DEBUG, "Setting interrupt flag");
     __asm__ volatile ("sti");
 }
