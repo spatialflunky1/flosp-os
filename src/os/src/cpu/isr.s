@@ -8,12 +8,44 @@ isr_stub_%+%1:
             ; error code is auto pushed here
     push 1  ; indicate error
     push %1 ; indicate vector
+    ; Save all registers
+    push rax
+    push rbx
+    push rcx
+    push rdx
+    push rbp
+    push rsp
+    push rsi
     push rdi
+    push r8
+    push r9
+    push r10
+    push r11
+    push r12
+    push r13
+    push r14
+    push r15
     mov rdi,rsp
     call interrupt_handler
     mov rsp,rax
+    ; Restore all registers
+    pop r15
+    pop r14
+    pop r13
+    pop r12
+    pop r11
+    pop r10
+    pop r9
+    pop r8
     pop rdi
-    add rsp,16 ; advance the stack by 2
+    pop rsi
+    pop rsp
+    pop rbp
+    pop rdx
+    pop rcx
+    pop rbx
+    pop rax
+    add rsp,24 ; advance the stack by 3
     iretq
 %endmacro
 ; Call the interrupt_handler on a non-error interrupt
@@ -22,12 +54,44 @@ isr_stub_%+%1:
     push 0  ; dummy error code
     push 0  ; indicates non-error
     push %1 ; indicates vector
+    ; Save all registers
+    push rax
+    push rbx
+    push rcx
+    push rdx
+    push rbp
+    push rsp
+    push rsi
     push rdi
+    push r8
+    push r9
+    push r10
+    push r11
+    push r12
+    push r13
+    push r14
+    push r15
     mov rdi,rsp
     call interrupt_handler
     mov rsp,rax
+    ; Restore all registers
+    pop r15
+    pop r14
+    pop r13
+    pop r12
+    pop r11
+    pop r10
+    pop r9
+    pop r8
     pop rdi
-    add rsp,16 ; advance the stack by 2
+    pop rsi
+    pop rsp
+    pop rbp
+    pop rdx
+    pop rcx
+    pop rbx
+    pop rax
+    add rsp,24 ; advance the stack by 3
     iretq
 %endmacro
 ; Call the irq_handler on an irq interrupt
@@ -36,12 +100,44 @@ irq_stub_%+%1:
     push 0     ; dummy error code
     push 0     ; indicates non-error
     push %1+32 ; indicates vector (offset by first 32 cpu interrupts)
+    ; Save all registers
+    push rax
+    push rbx
+    push rcx
+    push rdx
+    push rbp
+    push rsp
+    push rsi
     push rdi
+    push r8
+    push r9
+    push r10
+    push r11
+    push r12
+    push r13
+    push r14
+    push r15
     mov rdi,rsp
     call interrupt_handler
     mov rsp,rax
+    ; Restore all registers
+    pop r15
+    pop r14
+    pop r13
+    pop r12
+    pop r11
+    pop r10
+    pop r9
+    pop r8
     pop rdi
-    add rsp,16 ; advance the stack by 2
+    pop rsi
+    pop rsp
+    pop rbp
+    pop rdx
+    pop rcx
+    pop rbx
+    pop rax
+    add rsp,24 ; advance the stack by 3
     iretq
 %endmacro
 

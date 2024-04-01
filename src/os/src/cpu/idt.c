@@ -8,7 +8,10 @@ cpu_status_t* interrupt_handler(cpu_status_t* cpu_status) {
         case 14:
             kern_log(FILTER_CRITICAL, "Page Fault");
             break;
+        case 0x20:
+            return cpu_status;
         default:
+            //cpu_status->iretq_cs = 0x08;
             kprint("Unexpected Interrupt: ");
             kprint_hex(cpu_status->int_vector, 1);
             kprint("\n");
@@ -18,7 +21,8 @@ cpu_status_t* interrupt_handler(cpu_status_t* cpu_status) {
         kprint("Error Code: ");
         kprint_hex(cpu_status->error_code, 1);
         kprint("\n");
-        halt();
+        kern_log(FILTER_CRITICAL, "CPU Frozen");
+        __asm__ volatile("cli; hlt");
     }
     // Send EOI to PIC
     // Also send EOI to slave pic if vector is at or above IRQ 8

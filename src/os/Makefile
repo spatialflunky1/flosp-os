@@ -10,6 +10,7 @@ CFLAGS := \
 		  -Wstrict-prototypes
 LDFLAGS := \
 		   -ffreestanding \
+		   -no-pie \
 		   -nostdlib \
 		   -T src/kernel/kernel.ld
 
@@ -24,7 +25,7 @@ obj:
 bin:
 	mkdir -p bin/kernel
 
-kernel.elf: ${OBJ} obj/cpu/isr.o obj/cpu/gdt64.o
+kernel.elf: ${OBJ} obj/cpu/isr.o obj/cpu/gdt64.o obj/cpu/gdt64_init.o 
 	${CC} -o $@ ${LDFLAGS} $^
 
 obj/%.o: src/%.c

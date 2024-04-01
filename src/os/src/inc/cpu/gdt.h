@@ -3,7 +3,7 @@
 
 #include <kernel/message.h>
 
-extern void* gdt64_descriptor;
+extern void gdt_init_asm(void);
 
 void gdt_init(void);
 

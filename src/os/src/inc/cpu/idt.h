@@ -42,7 +42,22 @@ typedef struct {
 } __attribute__((packed)) idtr_t;
 
 typedef struct {
+    ui64_t r15;
+    ui64_t r14;
+    ui64_t r13;
+    ui64_t r12;
+    ui64_t r11;
+    ui64_t r10;
+    ui64_t r9;
+    ui64_t r8;
     ui64_t rdi;
+    ui64_t rsi;
+    ui64_t rsp;
+    ui64_t rbp;
+    ui64_t rdx;
+    ui64_t rcx;
+    ui64_t rbx;
+    ui64_t rax;
     ui64_t int_vector;
     ui64_t error;
     ui64_t error_code;

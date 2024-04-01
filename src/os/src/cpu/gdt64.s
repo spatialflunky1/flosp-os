@@ -46,6 +46,8 @@ gdt64_descriptor:
     dq gdt64_start               ; start address of the GDT
 
 ; Define constants to store the segment values required for protected mode
+global CODE_SEG64
+global DATA_SEG64
 CODE_SEG64 EQU gdt64_code - gdt64_start
 DATA_SEG64 EQU gdt64_data - gdt64_start
 TSS_SEG64  EQU gdt64_tss  - gdt64_start
