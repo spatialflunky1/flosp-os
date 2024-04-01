@@ -9,7 +9,7 @@ cpu_status_t* interrupt_handler(cpu_status_t* cpu_status) {
             kern_log(FILTER_CRITICAL, "Page Fault");
             break;
         case 0x20:
-            return cpu_status;
+            break;
         default:
             //cpu_status->iretq_cs = 0x08;
             kprint("Unexpected Interrupt: ");

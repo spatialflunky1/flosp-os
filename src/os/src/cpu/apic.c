@@ -36,7 +36,8 @@ void check_apic(void) {
     ui32_t edx = cpuid(1) >> 32;
     if ((edx & CPUID_FEAT_EDX_APIC) == 0) {
         kern_log(FILTER_CRITICAL, "APIC Not Supported");
-        halt();
+        kern_log(FILTER_CRITICAL, "CPU Frozen");
+        __asm__ volatile ("cli; hlt");
     }
 }
 

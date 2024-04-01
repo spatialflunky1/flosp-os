@@ -18,7 +18,7 @@ void main(BOOT_INFO* boot_info) {
     __asm__ volatile ("int $33");
     // Halt execution
     while (1) { 
-        halt();
+        __asm__ volatile ("hlt");
     }
     return;
 }
