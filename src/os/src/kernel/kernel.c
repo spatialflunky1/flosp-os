@@ -7,6 +7,7 @@ void main(BOOT_INFO* boot_info) {
     // GDT
     gdt_init();
     kern_log(FILTER_INFO, "GDT Initialized");
+    
     // IDT
     idt_init();
     kern_log(FILTER_INFO, "IDT Initialized and Interrupts enabled");
@@ -15,7 +16,7 @@ void main(BOOT_INFO* boot_info) {
     kern_log(FILTER_INFO, "LAPIC Enabled");
     // Keyboard IRQ test
     kern_log(FILTER_DEBUG, "Testing interrupt");
-    __asm__ volatile ("int $33");
+    __asm__ volatile ("int $33"); 
     // Halt execution
     while (1) { 
         __asm__ volatile ("hlt");

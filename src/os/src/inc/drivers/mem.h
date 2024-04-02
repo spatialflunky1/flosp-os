@@ -3,6 +3,6 @@
 
 #include <kernel/datatypes.h>
 
-void memcpy(ui8_t* source, ui8_t* dest, ui32_t nbytes);
+void memcpy(void* sourcep, void* destp, ui32_t nbytes);
 
 #endif

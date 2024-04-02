@@ -4,17 +4,21 @@
 // Global Vars
 //
 // Output info
-ui16_t output_height = BOOT_HEIGHT;
-ui16_t output_width = BOOT_WIDTH;
+ui16_t output_height = 0;
+ui16_t output_width = 0;
 // Text info
 ui16_t text_col_px = 0;
-ui8_t text_line = 0;
+ui16_t text_line = 0;
+ui16_t max_text_line = 0;
 int text_color = rgb(255,255,255);
 // Font info
 ui8_t font_size = 16; // height
 
 void initialize_video(BOOT_VIDEO_MODE_INFO* VMI) {
     VideoModeInfo = VMI;
+    output_height = VideoModeInfo->VerticalResolution;
+    output_width  = VideoModeInfo->HorizontalResolution;
+    max_text_line = (output_height / font_size) - 1;
     blank_output();
 }
 
@@ -32,6 +36,8 @@ void blank_output(void) {
             *pos = rgb(0,0,0);
         }
     }
+    text_line = 0;
+    text_col_px = 0;
 }
 
 void kputchar(const unsigned char c) {     
@@ -72,11 +78,38 @@ void kputchar(const unsigned char c) {
     text_col_px += 9; // 9 instead of 8 to add a space in between chars printed
 }
 
+void kscroll_down(void) {
+    // start at 2nd line
+    ui32_t* pos = VideoModeInfo->FramebufferPointer;
+    pos += font_size * VideoModeInfo->HorizontalResolution;
+    // Move all pixels up by font_size lines
+    for (ui16_t row = 0; row < font_size * max_text_line; row++) {
+        memcpy(pos,
+                (pos - (font_size * VideoModeInfo->HorizontalResolution)),
+                VideoModeInfo->HorizontalResolution * 4);
+        pos += VideoModeInfo->HorizontalResolution;
+    }
+    // Blank last line
+    pos = VideoModeInfo->FramebufferPointer;
+    pos += max_text_line * font_size * VideoModeInfo->HorizontalResolution;
+    for (ui16_t row = 0; row < font_size; row++) {
+        for (ui16_t col = 0; col < VideoModeInfo->HorizontalResolution; col++) {
+            *pos = rgb(0, 0, 0);
+            pos++;
+        }
+    }
+}
+
 void kprint(const char *s) {
     while (*s != '\0') {
         if (*s == '\n') {
             text_col_px = 0;
-            text_line += 1;
+            if (text_line == max_text_line) {
+                kscroll_down();
+            }
+            else {
+                text_line += 1;
+            }
         }
         else {
             kputchar(*s);
