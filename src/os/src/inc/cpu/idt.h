@@ -3,9 +3,9 @@
 
 #include <drivers/vga.h>
 #include <drivers/io.h>
+#include <drivers/keyboard.h>
 #include <kernel/datatypes.h>
 #include <kernel/message.h>
-#include <kernel/power_mgmt.h>
 
 #define MAX_IDT_ENTRIES 256
 

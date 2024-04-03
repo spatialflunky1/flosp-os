@@ -1,7 +1,7 @@
 #ifndef VGA_H
 #define VGA_H
 
-#include <drivers/boot_font.h>
+#include <boot_font.h>
 #include <drivers/mem.h>
 #include <kernel/datatypes.h>
 

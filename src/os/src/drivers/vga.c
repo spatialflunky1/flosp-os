@@ -40,7 +40,21 @@ void blank_output(void) {
     text_col_px = 0;
 }
 
-void kputchar(const unsigned char c) {     
+void kputchar(const unsigned char c) {
+    if (c == 0) {
+        // Ignore if null byte
+        return;
+    }
+    else if (c == '\n') {
+        text_col_px = 0;
+        if (text_line == max_text_line) {
+            kscroll_down();
+        }
+        else {
+            text_line += 1;
+        }
+        return;
+    }
     ui32_t* pos = VideoModeInfo->FramebufferPointer;
     // Advance to current line
     pos += text_line * font_size * VideoModeInfo->HorizontalResolution;
@@ -102,18 +116,7 @@ void kscroll_down(void) {
 
 void kprint(const char *s) {
     while (*s != '\0') {
-        if (*s == '\n') {
-            text_col_px = 0;
-            if (text_line == max_text_line) {
-                kscroll_down();
-            }
-            else {
-                text_line += 1;
-            }
-        }
-        else {
-            kputchar(*s);
-        }
+        kputchar(*s);
         s++;
     }
 }

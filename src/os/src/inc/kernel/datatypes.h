@@ -11,7 +11,11 @@ typedef signed short i16_t;
 typedef signed int i32_t;
 typedef signed int __attribute__((__mode__(__DI__))) i64_t;
 
-#define size_t ui16_t
+typedef ui8_t bool;
+#define true 1
+#define false 0
+
+typedef ui16_t size_t;
 
 #define UI64_T_MAX_DEC_DIGITS 20
 #define UI64_T_MAX_HEX_DIGITS 16

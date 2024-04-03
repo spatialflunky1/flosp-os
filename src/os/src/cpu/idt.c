@@ -28,6 +28,12 @@ cpu_status_t* interrupt_handler(cpu_status_t* cpu_status) {
             // Programmable Interrupt Timer Interrupt
             //kern_log(FILTER_INFO, "Timer check");
             break;
+        case 0x21:
+            // Keyboard interrupt
+            if (check_keyboard_enabled()) {
+                keyboard_int();
+            }
+            break;
         default:
             kprint("Unexpected Interrupt: ");
             kprint_hex(cpu_status->int_vector, 1);

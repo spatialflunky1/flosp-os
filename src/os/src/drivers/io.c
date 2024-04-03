@@ -5,3 +5,11 @@ void outb(ui16_t port, ui8_t value) {
             : // No outputs
             : "a" (value), "d" (port));
 }
+
+ui8_t inb(ui16_t port) {
+    ui8_t value;
+    __asm__ ("in %%dx,%%al"
+            : "=a"(value)
+            : "d"(port));
+    return value;
+}
