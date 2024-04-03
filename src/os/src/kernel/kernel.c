@@ -18,7 +18,7 @@ void main(BOOT_INFO* boot_info) {
     keyboard_init();
     kern_log(FILTER_INFO, "Keyboard initialized");
     // Halt execution
-    while (1) { 
+    while (true) { 
         __asm__ volatile ("hlt");
     }
     return;
