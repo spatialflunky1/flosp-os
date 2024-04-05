@@ -19,8 +19,7 @@ cpu_status_t* interrupt_handler(cpu_status_t* cpu_status) {
         kprint("Error Code: ");
         kprint_hex(cpu_status->error_code, 1);
         kprint("\n");
-        kern_log(FILTER_CRITICAL, "CPU Frozen");
-        __asm__ volatile("cli; hlt");
+        cpu_freeze();
     }
     // Reach here on non-error interrupts
     switch (cpu_status->int_vector) {

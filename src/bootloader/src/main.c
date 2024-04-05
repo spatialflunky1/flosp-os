@@ -56,6 +56,21 @@ static EFI_STATUS get_memory_map(
     return status;
 }
 
+// Definition from gnu-efi
+static INT64 compare_efi_guid(EFI_GUID* guid1_ptr, EFI_GUID* guid2_ptr) {
+    INT32 *g1, *g2, r;
+    
+    g1 = (INT32*) guid1_ptr;
+    g2 = (INT32*) guid2_ptr;
+
+    r  = g1[0] - g2[0];
+    r |= g1[1] - g2[1];
+    r |= g1[2] - g2[2];
+    r |= g1[3] - g2[3];
+
+    return r;
+}
+
 EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable) {
     // Bootloader status
     EFI_STATUS                       status                 = EFI_SUCCESS;
@@ -146,6 +161,31 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable) {
     BootInfo.VideoModeInfo.PixelsPerScanline = 
         GraphicsOutputProtocol->Mode->Info->PixelsPerScanline;
 
+    //
+    // ACPI XSDP Table
+    //
+    BootInfo.XSDPTable = NULL;
+    EFI_GUID ACPI2GUID = EFI_ACPI_20_TABLE_GUID;
+    EFI_CONFIGURATION_TABLE* tempTable = SystemTable->ConfigurationTable;
+    for (UINT16 i = 0; i < SystemTable->NumberOfTableEntries; i++) {
+        if (compare_efi_guid(&tempTable[i].VendorGuid, &ACPI2GUID)) {
+            if (((char*)tempTable->VendorTable)[0] == 'R' &&
+                ((char*)tempTable->VendorTable)[1] == 'S' &&
+                ((char*)tempTable->VendorTable)[2] == 'D' &&
+                ((char*)tempTable->VendorTable)[3] == ' ' &&
+                ((char*)tempTable->VendorTable)[4] == 'P' &&
+                ((char*)tempTable->VendorTable)[5] == 'T' &&
+                ((char*)tempTable->VendorTable)[6] == 'R' &&
+                ((char*)tempTable->VendorTable)[7] == ' ') {
+                BootInfo.XSDPTable = tempTable->VendorTable;
+            }
+        }
+        tempTable++;
+    }
+    if (BootInfo.XSDPTable == NULL) {
+        efi_print(SystemTable, L"Fatal: Unable to locate ACPI v2+ XSDP\r\n");
+        return EFI_NOT_FOUND;
+    }
 
     //
     // Initialize Simple File System Protocol

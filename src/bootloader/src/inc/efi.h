@@ -8,9 +8,11 @@
 #endif
 
 #define EFI_SIMPLE_FILE_SYSTEM_PROTOCOL_GUID \
-    { 0x964e5b22, 0x6459, 0x11d2, {0x8e, 0x39, 0x0, 0xa0, 0xc9, 0x69, 0x72, 0x3b} }
+    { 0x964e5b22, 0x6459, 0x11d2, {0x8e, 0x39, 0x0, 0xa0, 0xc9, 0x69, 0x72, 0x3b } }
 #define EFI_GRAPHICS_OUTPUT_PROTOCOL_GUID \
-   { 0x9042a9de, 0x23dc, 0x4a38, {0x96, 0xfb, 0x7a, 0xde, 0xd0, 0x80, 0x51, 0x6a } }
+    { 0x9042a9de, 0x23dc, 0x4a38, {0x96, 0xfb, 0x7a, 0xde, 0xd0, 0x80, 0x51, 0x6a } }
+#define EFI_ACPI_20_TABLE_GUID \
+    { 0x8868e871, 0xe4f1, 0x11d3, {0xbc, 0x22, 0x00, 0x80, 0xc7, 0x3c, 0x88, 0x81 } }
 
 #define EFI_ERROR(a) (a < 0)
 #define EFIERR(a)    (EFI_STATUS)(0x8000000000000000 | a)
@@ -469,21 +471,26 @@ typedef struct {
     void*                    CreateEventEx;
 } EFI_BOOT_SERVICES;
 
+typedef struct {
+    EFI_GUID VendorGuid;
+    void*    VendorTable;
+} EFI_CONFIGURATION_TABLE;
+
 // All void* entries are unused by bootloader
 typedef struct {
-    EFI_TABLE_HEADER                 Hdr;                 // Table header
-    CHAR16*                          FirmwareVendor;      // Null-term string to identify the firmware vendor
-    UINT32                           FirmwareRevision;    // Vendor specific firmware revision
-    EFI_HANDLE                       ConsoleInHandle;     // Unused
-    void*                            ConIn;               // Unused
-    EFI_HANDLE                       ConsoleOutHandle;    // Handle for the active console output device
-    EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL* ConOut;              // EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL interface pointer
-    EFI_HANDLE                       StandardErrorHandle; // Unused
-    void*                            StdErr;              // Unused
-    void*                            RuntimeServices;     // Unused
-    EFI_BOOT_SERVICES*               BootServices;        // Unused
+    EFI_TABLE_HEADER                 Hdr;                  // Table header
+    CHAR16*                          FirmwareVendor;       // Null-term string to identify the firmware vendor
+    UINT32                           FirmwareRevision;     // Vendor specific firmware revision
+    EFI_HANDLE                       ConsoleInHandle;      // Unused
+    void*                            ConIn;                // Unused
+    EFI_HANDLE                       ConsoleOutHandle;     // Handle for the active console output device
+    EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL* ConOut;               // EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL interface pointer
+    EFI_HANDLE                       StandardErrorHandle;  // Unused
+    void*                            StdErr;               // Unused
+    void*                            RuntimeServices;      // Unused
+    EFI_BOOT_SERVICES*               BootServices;         // Unused
     UINT64                           NumberOfTableEntries; // Unused
-    void*                            ConfigurationTable;  // Unused
+    EFI_CONFIGURATION_TABLE*         ConfigurationTable;   // Unused
 } EFI_SYSTEM_TABLE;
 
 typedef struct {
@@ -552,6 +559,7 @@ typedef struct {
     UINT64                      MemoryMapSize;
     UINT64                      MemoryMapDescriptorSize;
     KERNEL_BOOT_VIDEO_MODE_INFO VideoModeInfo;
+    void*                       XSDPTable;
 } KERNEL_BOOT_INFO;
 
 #endif

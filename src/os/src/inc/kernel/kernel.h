@@ -4,6 +4,7 @@
 #include <kernel/message.h>
 #include <kernel/power_mgmt.h>
 #include <cpu/apic.h>
+#include <cpu/acpi.h>
 
 typedef struct {
     ui32_t Type;
@@ -18,6 +19,7 @@ typedef struct {
     ui64_t               MemoryMapSize;
     ui64_t               MemoryMapDescriptorSize;
     BOOT_VIDEO_MODE_INFO VideoModeInfo;
+    xsdp_t*              XSDPTable;
 } BOOT_INFO;
 
 #ifndef KVER
