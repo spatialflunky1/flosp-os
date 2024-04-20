@@ -67,6 +67,34 @@
 #define CPUID_FEAT_EDX_IA64       1 << 30
 #define CPUID_FEAT_EDX_PBE        1 << 31
 
+typedef struct {
+    ui64_t r15;
+    ui64_t r14;
+    ui64_t r13;
+    ui64_t r12;
+    ui64_t r11;
+    ui64_t r10;
+    ui64_t r9;
+    ui64_t r8;
+    ui64_t rdi;
+    ui64_t rsi;
+    ui64_t rsp;
+    ui64_t rbp;
+    ui64_t rdx;
+    ui64_t rcx;
+    ui64_t rbx;
+    ui64_t rax;
+    ui64_t int_vector;
+    ui64_t error;
+    ui64_t error_code;
+
+    ui64_t iretq_rip;
+    ui64_t iretq_cs;
+    ui64_t iretq_flags;
+    ui64_t iretq_rsp;
+    ui64_t iretq_ss;
+} cpu_status_t;
+
 // Inline functions need to be defined in the header
 static inline ui64_t cpuid(int code) {
     ui32_t low,high;

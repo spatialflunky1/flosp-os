@@ -7,18 +7,33 @@ void main(BOOT_INFO* boot_info) {
     // GDT
     gdt_init();
     kern_log(FILTER_INFO, "GDT initialized");
-    
     // IDT
     idt_init();
     kern_log(FILTER_INFO, "IDT initialized and interrupts enabled");
+    // ACPI pointer check
+    if (boot_info->XSDPTable == NULL) {
+        kern_log(FILTER_CRITICAL, "Fatal: Invalid ACPI XSDP address");
+        cpu_freeze();
+    }
     // ACPI version check
     acpi_vcheck(boot_info->XSDPTable);
     // ACPI Checksum check
     acpi_ccheck(boot_info->XSDPTable);
+    // ACPI Init (variables and such)
+    acpi_init(boot_info->XSDPTable);
     // LAPIC
     enable_lapic();
     kern_log(FILTER_INFO, "LAPIC enabled");
+    // Timers
+    kern_log(FILTER_DEBUG, "Initializing the PIT for kernel usage");
+    pit_init();
+    // PS/2
+    if (check_ps2()) {
+        ps2_init();
+    }
     // Initialize keyboard
+    //__asm__ volatile ("int $32");
+    //kprint_num(get_uptime_ticks());
     keyboard_init();
     kern_log(FILTER_INFO, "Keyboard initialized");
     // Halt execution

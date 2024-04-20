@@ -20,6 +20,6 @@ typedef ui16_t size_t;
 #define UI64_T_MAX_DEC_DIGITS 20
 #define UI64_T_MAX_HEX_DIGITS 16
 
-#define NULL (void*)0;
+#define NULL (void*)0
 
 #endif

@@ -3,6 +3,7 @@ INC_DIR := src/inc
 CFLAGS := \
 		  -ffreestanding \
 		  -fno-stack-protector \
+		  -mno-red-zone \
 		  -I${INC_DIR} \
 		  -Wall \
 		  -Wextra \
@@ -13,6 +14,13 @@ LDFLAGS := \
 		   -no-pie \
 		   -nostdlib \
 		   -T src/kernel/kernel.ld
+# 0: All messages
+# 1: No debug messages
+# 2: No info messages
+# 3: No warning messages
+# 4: No error messages
+# 5: No critical messages
+MESSAGE_FILTER := 0
 
 C_SRC = $(wildcard src/kernel/*.c src/drivers/*.c src/cpu/*.c)
 OBJ = $(C_SRC:src/%.c=obj/%.o)
@@ -29,10 +37,10 @@ kernel.elf: ${OBJ} obj/cpu/isr.o obj/cpu/gdt64.o obj/cpu/gdt64_init.o
 	${CC} -o $@ ${LDFLAGS} $^
 
 obj/%.o: src/%.c
-	 ${CC} ${CFLAGS} -c $< -o $@
+	 ${CC} -DMESSAGE_FILTER=${MESSAGE_FILTER} ${CFLAGS} -c $< -o $@
 
 obj/kernel/kernel.o: src/kernel/kernel.c src/inc/kernel/kernel.h
-	./kernel_build.sh "${CC}" "${CFLAGS}" "$<" "$@"
+	./kernel_build.sh "${CC}" "${CFLAGS}" "$<" "$@" "${MESSAGE_FILTER}"
 
 obj/cpu/%.o: src/cpu/%.s
 	nasm $< -f elf64 -o $@

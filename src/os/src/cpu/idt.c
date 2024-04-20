@@ -2,7 +2,7 @@
 
 cpu_status_t* interrupt_handler(cpu_status_t* cpu_status) {
     if (cpu_status->error) {
-        kern_log(FILTER_CRITICAL, "Flosp OS has encountered an exception and cannot continue");
+        kern_log(FILTER_CRITICAL, "\nFlosp OS has encountered an exception and cannot continue");
         switch (cpu_status->int_vector) {
             case 0x0D:
                 kern_log(FILTER_CRITICAL, "General Protection Fault");
@@ -25,12 +25,18 @@ cpu_status_t* interrupt_handler(cpu_status_t* cpu_status) {
     switch (cpu_status->int_vector) {
         case 0x20:
             // Programmable Interrupt Timer Interrupt
-            //kern_log(FILTER_INFO, "Timer check");
+            cpu_status = timer_handler(cpu_status);
             break;
         case 0x21:
             // Keyboard interrupt
             if (check_keyboard_enabled()) {
-                keyboard_int();
+                keyboard_handler();
+            }
+            break;
+        case 0x2C:
+            // Mouse interrupt
+            if (check_mouse_enabled()) {
+                mouse_handler();
             }
             break;
         default:
@@ -66,7 +72,7 @@ void mask_pic_interrupts(void) {
 }
 
 void idt_init(void) {
-    kern_log(FILTER_DEBUG, "Defining and setting IDT entries");
+    kern_log(FILTER_DEBUG, "Debug: Defining and setting IDT entries");
     idtr.base = &idt[0];
     idtr.limit = sizeof(idt_entry_t) * MAX_IDT_ENTRIES - 1;
     // Set reserved interrupts
@@ -74,13 +80,13 @@ void idt_init(void) {
         idt_set_descriptor(vect, isr_stub_table[vect], 0x8E); // 1 00 0(8) 1110(E)
     }
     // Set IRQs
-    for (ui8_t vect = 32; vect < 32+8; vect++) {
+    for (ui8_t vect = 32; vect < 32+16; vect++) {
         idt_set_descriptor(vect, isr_stub_table[vect], 0x8E);
     }
-    kern_log(FILTER_DEBUG, "Masking PIC interrupts");
+    kern_log(FILTER_DEBUG, "Debug: Masking PIC interrupts");
     mask_pic_interrupts();
-    kern_log(FILTER_DEBUG, "Loading IDT");
+    kern_log(FILTER_DEBUG, "Debug: Loading IDT");
     __asm__ volatile ("lidt %0" :: "m"(idtr));
-    kern_log(FILTER_DEBUG, "Setting interrupt flag");
+    kern_log(FILTER_DEBUG, "Debug: Setting interrupt flag");
     __asm__ volatile ("sti");
 }

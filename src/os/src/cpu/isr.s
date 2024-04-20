@@ -1,6 +1,7 @@
 ; Interrupt Service Routines
 [bits 64]
 extern interrupt_handler
+extern timer_handler
 
 ; Call the interrupt_handler on an error interrupt
 %macro isr_err_stub 1
@@ -183,6 +184,14 @@ irq_stub        4
 irq_stub        5
 irq_stub        6
 irq_stub        7
+irq_stub        8
+irq_stub        9
+irq_stub        10
+irq_stub        11
+irq_stub        12
+irq_stub        13
+irq_stub        14
+irq_stub        15
 
 global isr_stub_table
 
@@ -194,7 +203,7 @@ isr_stub_table:
 %endrep
 ; IRQs
 %assign i 0
-%rep 8
+%rep 15
     dq irq_stub_%+i
 %assign i i+1
 %endrep

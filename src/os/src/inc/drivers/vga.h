@@ -22,5 +22,6 @@ void kputchar(const unsigned char c);
 void kscroll_down(void);
 void kprint(const char* s);
 void kprint_hex(ui64_t h, const ui8_t zero_x);
+void kprint_num(ui64_t n);
 
 #endif

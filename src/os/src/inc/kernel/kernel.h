@@ -1,8 +1,11 @@
 #include <drivers/vga.h>
+#include <drivers/ps2.h>
 #include <cpu/idt.h>
 #include <cpu/gdt.h>
 #include <kernel/message.h>
 #include <kernel/power_mgmt.h>
+#include <kernel/datatypes.h>
+#include <kernel/timers.h>
 #include <cpu/apic.h>
 #include <cpu/acpi.h>
 

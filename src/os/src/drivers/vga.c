@@ -122,22 +122,22 @@ void kprint(const char *s) {
 }
 
 void kprint_hex(ui64_t h, const ui8_t zero_x) {
-    char  StringBuffer[UI64_T_MAX_HEX_DIGITS];
+    char  string_buffer[UI64_T_MAX_HEX_DIGITS];
     ui8_t stack_top = -1;
     // Append the hex digits to the string buffer
     if (h == 0) {
         stack_top++;
-        StringBuffer[stack_top] = L'0';
+        string_buffer[stack_top] = L'0';
     }
     ui16_t tmp0;
     while(h != 0) {
         stack_top++;
         tmp0 = h % 16;
         if (tmp0 >= 10) {
-            StringBuffer[stack_top] = (char)(tmp0+55);
+            string_buffer[stack_top] = (char)(tmp0+55);
         }
         else {
-            StringBuffer[stack_top] = (char)(tmp0+48);
+            string_buffer[stack_top] = (char)(tmp0+48);
         }
         h /= 16;
     }
@@ -146,16 +146,47 @@ void kprint_hex(ui64_t h, const ui8_t zero_x) {
     i8_t tmp_index = stack_top;
     char tmp1;
     for (; tmp_index > (stack_top/2); tmp_index--) {
-        tmp1 = StringBuffer[stack_top - tmp_index];
-        StringBuffer[stack_top - tmp_index] = StringBuffer[tmp_index];
-        StringBuffer[tmp_index] = tmp1;
+        tmp1 = string_buffer[stack_top - tmp_index];
+        string_buffer[stack_top - tmp_index] = string_buffer[tmp_index];
+        string_buffer[tmp_index] = tmp1;
     }
     // Add the null byte
-    StringBuffer[stack_top+1] = L'\0';
+    string_buffer[stack_top+1] = L'\0';
     
     // Print the created string
     if (zero_x) {
         kprint("0x");
     }
-    kprint(StringBuffer);
+    kprint(string_buffer);
+}
+
+void kprint_num(ui64_t n) {
+    char  string_buffer[UI64_T_MAX_DEC_DIGITS];
+    ui8_t stack_top = -1;
+    // Append the dec digits to the string buffer
+    if (n == 0) {
+        stack_top++;
+        string_buffer[stack_top] = L'0';
+    }
+    ui16_t tmp0;
+    while(n != 0) {
+        stack_top++;
+        tmp0 = n % 10;
+        string_buffer[stack_top] = (char)(tmp0+48);
+        n /= 10;
+    }
+
+    // Reverse digits into the correct order in the StringBuffer
+    i8_t tmp_index = stack_top;
+    char tmp1;
+    for (; tmp_index > (stack_top/2); tmp_index--) {
+        tmp1 = string_buffer[stack_top - tmp_index];
+        string_buffer[stack_top - tmp_index] = string_buffer[tmp_index];
+        string_buffer[tmp_index] = tmp1;
+    }
+    // Add the null byte
+    string_buffer[stack_top+1] = L'\0';
+    
+    // Print the created string
+    kprint(string_buffer);
 }

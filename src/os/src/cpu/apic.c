@@ -42,12 +42,12 @@ void check_apic(void) {
 }
 
 void enable_lapic(void) {
-    kern_log(FILTER_DEBUG, "Checking for APIC support");
+    kern_log(FILTER_DEBUG, "Debug: Checking for APIC support");
     check_apic();
-    kern_log(FILTER_DEBUG, "Disabling PIC8259 and masking its interrupts");
+    kern_log(FILTER_DEBUG, "Debug: Disabling PIC8259 and masking its interrupts");
     disable_pic8259();
-    kern_log(FILTER_DEBUG, "Enabling the LAPIC if it was not already done");
+    kern_log(FILTER_DEBUG, "Debug: Enabling the LAPIC if it was not already done");
     lapic_set_base(lapic_get_base());
-    kern_log(FILTER_DEBUG, "Setting the Spurious bit to start recieving interrupts");
+    kern_log(FILTER_DEBUG, "Debug: Setting the Spurious bit to start recieving interrupts");
     lapic_write_reg(SPURIOUS_VECTOR, lapic_read_reg(SPURIOUS_VECTOR) | 0x100); // Set bit 8, enable local APIC  
 }

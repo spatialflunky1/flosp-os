@@ -4,21 +4,13 @@
 #include <drivers/vga.h>
 #include <drivers/io.h>
 #include <drivers/keyboard.h>
+#include <drivers/mouse.h>
 #include <kernel/datatypes.h>
 #include <kernel/message.h>
 #include <kernel/power_mgmt.h>
+#include <cpu/cpu.h>
 
 #define MAX_IDT_ENTRIES 256
-
-//
-// Programmable Interrupt Controller
-//
-#define PIC_COMMAND_MASTER 0x20
-#define PIC_DATA_MASTER    0x21
-#define PIC_COMMAND_SLAVE  0xA0
-#define PIC_DATA_SLAVE     0xA1
-// End of Interrupt command
-#define PIC_EOI 0x20
 
 extern void* isr_stub_table[];
 
@@ -41,34 +33,6 @@ typedef struct {
     ui16_t        limit;
     idt_entry_t*    base;
 } __attribute__((packed)) idtr_t;
-
-typedef struct {
-    ui64_t r15;
-    ui64_t r14;
-    ui64_t r13;
-    ui64_t r12;
-    ui64_t r11;
-    ui64_t r10;
-    ui64_t r9;
-    ui64_t r8;
-    ui64_t rdi;
-    ui64_t rsi;
-    ui64_t rsp;
-    ui64_t rbp;
-    ui64_t rdx;
-    ui64_t rcx;
-    ui64_t rbx;
-    ui64_t rax;
-    ui64_t int_vector;
-    ui64_t error;
-    ui64_t error_code;
-
-    ui64_t iretq_rip;
-    ui64_t iretq_cs;
-    ui64_t iretq_flags;
-    ui64_t iretq_rsp;
-    ui64_t iretq_ss;
-} cpu_status_t;
 
 // Var definitions
 __attribute__((aligned(0x10))) static idt_entry_t idt[MAX_IDT_ENTRIES]; // idt: array of idt entries
