@@ -11,6 +11,7 @@ ui16_t text_col_px = 0;
 ui16_t text_line = 0;
 ui16_t max_text_line = 0;
 int text_color = rgb(255,255,255);
+int background_color = rgb(0,0,0);
 // Font info
 ui8_t font_size = 16; // height
 
@@ -78,9 +79,12 @@ void kputchar(const unsigned char c) {
     }
     for (unsigned int i = 0; i < font_size; i++) { 
         unsigned char ch = *ch_addr;
-        while (ch != 0) {
+        for (ui8_t j = 0; j < 8; j++) {
             if (ch % 2 == 1) { // last bit is set
                 *pos = text_color;
+            }
+            else {
+                *pos = background_color;
             }
             ch = ch >> 1;
             pos--;
@@ -127,7 +131,7 @@ void kprint_hex(ui64_t h, const ui8_t zero_x) {
     // Append the hex digits to the string buffer
     if (h == 0) {
         stack_top++;
-        string_buffer[stack_top] = L'0';
+        string_buffer[stack_top] = '0';
     }
     ui16_t tmp0;
     while(h != 0) {
@@ -151,7 +155,7 @@ void kprint_hex(ui64_t h, const ui8_t zero_x) {
         string_buffer[tmp_index] = tmp1;
     }
     // Add the null byte
-    string_buffer[stack_top+1] = L'\0';
+    string_buffer[stack_top+1] = '\0';
     
     // Print the created string
     if (zero_x) {
@@ -166,7 +170,7 @@ void kprint_num(ui64_t n) {
     // Append the dec digits to the string buffer
     if (n == 0) {
         stack_top++;
-        string_buffer[stack_top] = L'0';
+        string_buffer[stack_top] = '0';
     }
     ui16_t tmp0;
     while(n != 0) {
@@ -185,8 +189,19 @@ void kprint_num(ui64_t n) {
         string_buffer[tmp_index] = tmp1;
     }
     // Add the null byte
-    string_buffer[stack_top+1] = L'\0';
+    string_buffer[stack_top+1] = '\0';
     
     // Print the created string
     kprint(string_buffer);
+}
+
+void backspace(void) {
+    if (text_col_px >= 9) {
+        text_col_px -= 9; // One font width back for printing
+    }
+    else {
+        return;
+    }
+    kputchar(' ');
+    text_col_px -= 9; // One font width back for next char 
 }

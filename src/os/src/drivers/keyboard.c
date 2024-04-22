@@ -71,6 +71,10 @@ char keycode_char(ui8_t keycode) {
             break;
         case 0xB6:
             shift_down = false;
+            break;
+        case 0x0E:
+            backspace();
+            break;
         default:
             if (shift_down) {
                 return chars_cap[keycode];
