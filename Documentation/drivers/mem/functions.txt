@@ -1,4 +1,4 @@
-void memcpy(unsigned char* source, unsigned char* dest, unsigned int nbytes)
+void* memcpy(void* sourcep, void* destp, ui32_t nbytes);
     Copies nbytes from `source` to `dest`
 
 void* memset(void *destp, int constant, ui32_t nbytes)
