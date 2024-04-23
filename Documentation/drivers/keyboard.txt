@@ -1,0 +1,14 @@
+void keyboard_init(void)
+  Checks for keyboard type and runs the correct initializations for the type connected
+
+char keycode_char(ui8_t keycode)
+  Translates the `keycode` parameter to either a char or a function call
+
+int ps2_scancode_correction(ui8_t port)
+  Sets the correct scancode set for a PS/2 keyboard
+
+void keyboard_handler(void)
+  The function to be called for a keyboard interrupt
+
+bool check_keyboard_enabled(void)
+  returns a boolean value for if the keyboard is enabled
