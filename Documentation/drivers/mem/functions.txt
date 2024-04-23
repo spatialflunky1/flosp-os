@@ -1,2 +1,5 @@
 void memcpy(unsigned char* source, unsigned char* dest, unsigned int nbytes)
-    Copies nbytes from source to dest
+    Copies nbytes from `source` to `dest`
+
+void* memset(void *destp, int constant, ui32_t nbytes)
+    Sets nbytes to the value `constant` starting at location `destp`
