@@ -31,11 +31,10 @@ void main(BOOT_INFO* boot_info) {
     if (check_ps2()) {
         ps2_init();
     }
+    // USB
+
     // Initialize keyboard
-    //__asm__ volatile ("int $32");
-    //kprint_num(get_uptime_ticks());
     keyboard_init();
-    kern_log(FILTER_INFO, "Keyboard initialized");
     // Halt execution
     while (true) { 
         __asm__ volatile ("hlt");

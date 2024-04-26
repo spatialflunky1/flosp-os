@@ -1,7 +1,7 @@
 #ifndef CPU_H
 #define CPU_H
 
-#include <kernel/datatypes.h>
+#include <datatypes.h>
 #include <kernel/power_mgmt.h>
 
 #define CPUID_FEAT_ECX_SSE3       1 << 0 

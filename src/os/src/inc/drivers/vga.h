@@ -3,7 +3,7 @@
 
 #include <boot_font.h>
 #include <drivers/mem.h>
-#include <kernel/datatypes.h>
+#include <datatypes.h>
 
 #define rgb(r,g,b) (r << 16) | (g << 8) | b
 
@@ -23,6 +23,7 @@ void kscroll_down(void);
 void kprint(const char* s);
 void kprint_hex(ui64_t h, const ui8_t zero_x);
 void kprint_num(ui64_t n);
+void kprint_bin(ui64_t b, ui8_t);
 void backspace(void);
 
 #endif

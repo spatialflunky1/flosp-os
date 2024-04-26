@@ -195,6 +195,37 @@ void kprint_num(ui64_t n) {
     kprint(string_buffer);
 }
 
+void kprint_bin(ui64_t b, ui8_t size) {
+    char  string_buffer[UI64_T_MAX_DEC_DIGITS];
+    ui8_t stack_top = -1;
+    // Append the dec digits to the string buffer
+    if (b == 0) {
+        stack_top++;
+        string_buffer[stack_top] = '0';
+    }
+    ui16_t tmp0;
+    for (ui8_t i = 0; i < (size*8); i++) {
+        stack_top++;
+        tmp0 = b % 2;
+        string_buffer[stack_top] = (char)(tmp0+48);
+        b /= 2;
+    }
+
+    // Reverse digits into the correct order in the StringBuffer
+    i8_t tmp_index = stack_top;
+    char tmp1;
+    for (; tmp_index > (stack_top/2); tmp_index--) {
+        tmp1 = string_buffer[stack_top - tmp_index];
+        string_buffer[stack_top - tmp_index] = string_buffer[tmp_index];
+        string_buffer[tmp_index] = tmp1;
+    }
+    // Add the null byte
+    string_buffer[stack_top+1] = '\0';
+    
+    // Print the created string
+    kprint(string_buffer); 
+}
+
 void backspace(void) {
     if (text_col_px >= 9) {
         text_col_px -= 9; // One font width back for printing

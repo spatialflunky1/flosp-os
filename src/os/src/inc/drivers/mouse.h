@@ -1,7 +1,7 @@
 #ifndef MOUSE_H
 #define MOUSE_H
 
-#include <kernel/datatypes.h>
+#include <datatypes.h>
 #include <drivers/ps2.h>
 
 bool check_mouse_enabled(void);

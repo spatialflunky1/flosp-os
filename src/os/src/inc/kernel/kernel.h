@@ -4,7 +4,7 @@
 #include <cpu/gdt.h>
 #include <kernel/message.h>
 #include <kernel/power_mgmt.h>
-#include <kernel/datatypes.h>
+#include <datatypes.h>
 #include <kernel/timers.h>
 #include <cpu/apic.h>
 #include <cpu/acpi.h>

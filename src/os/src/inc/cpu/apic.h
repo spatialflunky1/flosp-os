@@ -1,7 +1,7 @@
 #ifndef APIC_H
 #define APIC_H
 
-#include <kernel/datatypes.h>
+#include <datatypes.h>
 #include <drivers/io.h>
 #include <cpu/cpu.h>
 #include <kernel/message.h>

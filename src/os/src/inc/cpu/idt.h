@@ -5,7 +5,7 @@
 #include <drivers/io.h>
 #include <drivers/keyboard.h>
 #include <drivers/mouse.h>
-#include <kernel/datatypes.h>
+#include <datatypes.h>
 #include <kernel/message.h>
 #include <kernel/power_mgmt.h>
 #include <cpu/cpu.h>

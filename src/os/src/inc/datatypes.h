@@ -17,6 +17,7 @@ typedef ui8_t bool;
 
 typedef ui16_t size_t;
 
+#define UI64_T_MAX_BIN_DIGITS 64
 #define UI64_T_MAX_DEC_DIGITS 20
 #define UI64_T_MAX_HEX_DIGITS 16
 

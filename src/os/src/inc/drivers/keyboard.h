@@ -1,12 +1,13 @@
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
 
-#include <kernel/datatypes.h>
+#include <datatypes.h>
 #include <kernel/message.h>
 #include <drivers/io.h>
 #include <drivers/vga.h>
 #include <drivers/ps2.h>
 #include <cpu/acpi.h>
+#include <drivers/usb.h>
 
 void keyboard_init(void);
 char keycode_char(ui8_t keycode);

@@ -1,7 +1,7 @@
 #ifndef ACPI_H
 #define ACPI_H
 
-#include <kernel/datatypes.h>
+#include <datatypes.h>
 #include <kernel/message.h>
 #include <kernel/power_mgmt.h>
 #include <drivers/io.h>

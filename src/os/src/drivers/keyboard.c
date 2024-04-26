@@ -44,18 +44,26 @@ void keyboard_init(void) {
             if (ps2_scancode_correction(1) == 1) {
                 return;
             }
+            kern_log(FILTER_DEBUG, "Debug: Keyboard initialized");
+            keyboard_enabled = true;
         }
-        else if (ps2_port_identity_translation(get_ps2_port_identity(1)) == TRANSLATION_KEYBOARD) {
+        else if (ps2_port_identity_translation(get_ps2_port_identity(2)) == TRANSLATION_KEYBOARD) {
             if (ps2_scancode_correction(2) == 1) {
                 return;
             }
+            kern_log(FILTER_DEBUG, "Debug: Keyboard initialized");
+            keyboard_enabled = true;
         }
         else {
-            kern_log(FILTER_ERROR, "No PS/2 keyboard detected");
-            return;
+            kern_log(FILTER_INFO, "Info: No PS/2 keyboard detected");
         }
     }
-    keyboard_enabled = true;
+    else if (is_usb_init()) {
+        
+    }
+    else {
+        kern_log(FILTER_WARNING, "Error: Keyboard initialization failed, no keyboard found");
+    }
 }
 
 char keycode_char(ui8_t keycode) {

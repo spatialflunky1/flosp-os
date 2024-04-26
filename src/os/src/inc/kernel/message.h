@@ -1,7 +1,7 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
-#include <kernel/datatypes.h>
+#include <datatypes.h>
 #include <drivers/vga.h>
 
 #define FILTER_NONE     0

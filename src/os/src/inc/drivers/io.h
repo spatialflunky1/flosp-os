@@ -1,7 +1,7 @@
 #ifndef IO_H
 #define IO_H
 
-#include <kernel/datatypes.h>
+#include <datatypes.h>
 
 //
 // PS/2

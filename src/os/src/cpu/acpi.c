@@ -56,7 +56,10 @@ void acpi_ccheck(xsdp_t* XSDPTable) {
 }
 
 bool check_ps2(void) {
-    if (FADT->sdt_header.revision < 2 || (ui8_t)(FADT->IAPC_BOOT_ARCH & 0x0002) == 1) {
+    kprint("Debug: FADT IAPC_BOOT_ARCH: ");
+    kprint_bin(FADT->IAPC_BOOT_ARCH, sizeof(FADT->IAPC_BOOT_ARCH));
+    kputchar('\n');
+    if (FADT->sdt_header.revision < 2 || FADT->IAPC_BOOT_ARCH & 2) {
         // Assume PS/2 exists if table rev is under 2
         kern_log(FILTER_INFO, "PS/2 controller detected");
         return true;
