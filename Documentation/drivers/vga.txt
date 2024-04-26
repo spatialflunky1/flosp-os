@@ -1,0 +1,23 @@
+Functions
+----------
+void initialize_video(BOOT_VIDEO_MODE_INFO* VMI)
+    Set the VideoModeInfo variable used by other VGA Functions and call `blank_output()`
+
+void blank_output(void)
+    Fill the screen with black pixels
+
+void kputchar(const unsigned char c)
+    Puts the character `c` at the next location specified by `text_col_px` and `text_line`
+
+void kscroll_down(void)
+    Scrolls all text on the screen up by one line
+
+void kprint(const char* s)
+    Iterates through the char array `s` and calls kputchar for the individual characters
+
+void kprint_hex(ui64_t h, const ui8_t zero_x)
+void kprint_num(ui64_t n)
+    Both of these functions work roughly the same just with a different divisor when doing the math: divides by 10 or 16 and adds the remainder to a char stack
+
+void backspace(void)
+    Clears the last character and sets the text cursor position to the previous location 

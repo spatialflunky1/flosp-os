@@ -1,9 +1,0 @@
-Functions
-----------
-void initialize_video(BOOT_VIDEO_MODE_INFO* VMI)
-    Set the VideoModeInfo variable used by other VGA Functions and call
-    blank_output()
-void blank_output(void)
-    Fill the screen with black pixels
-void kputchar(const unsigned char c)
-void kprint(const char* s)

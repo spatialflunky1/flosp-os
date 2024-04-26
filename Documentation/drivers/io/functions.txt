@@ -1,2 +1,0 @@
-void outb(unsigned short port, unsigned char value)
-    Sends a byte out to a specified I/O port

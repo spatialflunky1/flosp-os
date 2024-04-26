@@ -1,0 +1,5 @@
+void outb(ui16_t port, ui8_t value)
+    Sends a byte out to a specified I/O port
+
+ui8_t inb(ui16_t port)
+    Receives a byte from the specified I/O port

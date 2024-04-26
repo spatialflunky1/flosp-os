@@ -1,0 +1,5 @@
+void* memcpy(void* sourcep, void* destp, ui32_t nbytes);
+    Copies nbytes from `source` to `dest`
+
+void* memset(void *destp, int constant, ui32_t nbytes)
+    Sets nbytes to the value `constant` starting at location `destp`
