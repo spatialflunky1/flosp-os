@@ -21,9 +21,9 @@ void blank_output(void);
 void kputchar(const unsigned char c);
 void kscroll_down(void);
 void kprint(const char* s);
-void kprint_hex(ui64_t h, const ui8_t zero_x);
+void kprint_hex(ui64_t h, const bool zero_x);
 void kprint_num(ui64_t n);
-void kprint_bin(ui64_t b, ui8_t);
+void kprint_bin(ui64_t b, ui8_t size_b);
 void backspace(void);
 
 #endif

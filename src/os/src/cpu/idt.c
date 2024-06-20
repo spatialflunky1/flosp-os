@@ -1,14 +1,32 @@
 #include <cpu/idt.h>
 
+void page_fault_handler(cpu_status_t* cpu_status) {
+    // Remove the or 1 when paging is to be started
+    if (cpu_status->error_code & 0x01 || 1) {
+        // Page is present
+        // Panic
+        kern_log(FILTER_CRITICAL, "\nFlosp OS has encountered an exception and cannot continue");
+        kern_log(FILTER_CRITICAL, "Page Fault");
+        kprint("Error Code: ");
+        kprint_hex(cpu_status->error_code, 1);
+        kprint("\n");
+        cpu_freeze();
+    }
+    // Page is not present
+    // We can recover from this (later)
+    //ui64_t virt_addr = read_cr2();
+}
+
 cpu_status_t* interrupt_handler(cpu_status_t* cpu_status) {
     if (cpu_status->error) {
+        if (cpu_status->int_vector == 0x0E) {
+            page_fault_handler(cpu_status);
+            return cpu_status;
+        }
         kern_log(FILTER_CRITICAL, "\nFlosp OS has encountered an exception and cannot continue");
         switch (cpu_status->int_vector) {
             case 0x0D:
                 kern_log(FILTER_CRITICAL, "General Protection Fault");
-                break;
-            case 0x0E:
-                kern_log(FILTER_CRITICAL, "Page Fault");
                 break;
             default:
                 kprint("Interrupt vector: ");
@@ -24,7 +42,7 @@ cpu_status_t* interrupt_handler(cpu_status_t* cpu_status) {
     // Reach here on non-error interrupts
     switch (cpu_status->int_vector) {
         case 0x20:
-            // Programmable Interrupt Timer Interrupt
+            // System Timer Interrupt
             cpu_status = timer_handler(cpu_status);
             break;
         case 0x21:

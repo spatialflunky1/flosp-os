@@ -95,6 +95,11 @@ typedef struct {
     ui64_t iretq_ss;
 } cpu_status_t;
 
+// Functions from cpu/cpu.s
+extern ui64_t read_cr0(void);
+extern void   write_cr0(ui64_t cr0_val);
+extern ui64_t read_cr2(void);
+
 // Inline functions need to be defined in the header
 static inline ui64_t cpuid(int code) {
     ui32_t low,high;
@@ -105,17 +110,15 @@ static inline ui64_t cpuid(int code) {
     return ((ui64_t)high << 32) | low;
 }
 
-static inline ui64_t rdmsr(ui64_t msr) {
-    ui32_t low,high;
+static inline void rdmsr(ui64_t msr, ui32_t* low, ui32_t* high) {
     __asm__ volatile ("rdmsr" :
-            "=a"(low), "=d"(high) :
+            "=a"(*low), "=d"(*high) :
             "c"(msr));
-    return ((ui64_t)high << 32) | low;
 }
 
-static inline void wrmsr(ui64_t msr, ui64_t value) {
+static inline void wrmsr(ui64_t msr, ui32_t low, ui32_t high) {
     __asm__ volatile ("wrmsr" ::
-            "a"(value & 0xFFFFFFFF), "d"(value >> 32), "c"(msr));
+            "a"(low), "d"(high), "c"(msr));
 }
 
 #endif

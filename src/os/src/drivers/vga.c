@@ -1,4 +1,5 @@
 #include <drivers/vga.h>
+#include <kernel/power_mgmt.h>
 
 //
 // Global Vars
@@ -125,7 +126,7 @@ void kprint(const char *s) {
     }
 }
 
-void kprint_hex(ui64_t h, const ui8_t zero_x) {
+void kprint_hex(ui64_t h, const bool zero_x) {
     char  string_buffer[UI64_T_MAX_HEX_DIGITS];
     ui8_t stack_top = -1;
     // Append the hex digits to the string buffer
@@ -195,8 +196,8 @@ void kprint_num(ui64_t n) {
     kprint(string_buffer);
 }
 
-void kprint_bin(ui64_t b, ui8_t size) {
-    char  string_buffer[UI64_T_MAX_DEC_DIGITS];
+void kprint_bin(ui64_t b, ui8_t size_b) {
+    char  string_buffer[UI64_T_MAX_BIN_DIGITS];
     ui8_t stack_top = -1;
     // Append the dec digits to the string buffer
     if (b == 0) {
@@ -204,13 +205,12 @@ void kprint_bin(ui64_t b, ui8_t size) {
         string_buffer[stack_top] = '0';
     }
     ui16_t tmp0;
-    for (ui8_t i = 0; i < (size*8); i++) {
+    for (ui16_t i = 0; i < (size_b*8); i++) {
         stack_top++;
         tmp0 = b % 2;
         string_buffer[stack_top] = (char)(tmp0+48);
         b /= 2;
     }
-
     // Reverse digits into the correct order in the StringBuffer
     i8_t tmp_index = stack_top;
     char tmp1;

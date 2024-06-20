@@ -2,8 +2,9 @@
 
 bool ps2_initialized = false;
 bool dual_channel = false;
-bool port1 = false;
-bool port2 = false;
+// -1: not set
+bool port1 = -1;
+bool port2 = -1;
 bool ps2_error = false;
 
 ps2_port_identity identity1;
@@ -35,17 +36,17 @@ int ps2_init(void) {
     outb(PS2_DATA_PORT, config_byte);
     kern_log(FILTER_DEBUG, "Debug: Performing PS/2 controller self test");
     outb(PS2_COMMAND_PORT, PS2_CONTROLLER_TEST);
-    ui8_t response = inb(PS2_DATA_PORT);
-    if (response == PS2_CONTROLLER_TEST_PASS) {
-        kern_log(FILTER_DEBUG, "Debug: PS/2 controller test passed");
-    }
-    else if (response == PS2_CONTROLLER_TEST_FAIL) {
-        kern_log(FILTER_ERROR, "PS/2 controller test failed");
-        return 1;
-    }
-    else {
-        kern_log(FILTER_ERROR, "PS/2 controller test returned invalid response");
-        return 1;
+    ui8_t response;
+    while (true) {
+        response = inb(PS2_DATA_PORT);
+        if (response == PS2_CONTROLLER_TEST_PASS) {
+            kern_log(FILTER_DEBUG, "Debug: PS/2 controller test passed");
+            break;
+        }
+        else if (response == PS2_CONTROLLER_TEST_FAIL) {
+            kern_log(FILTER_ERROR, "Error: PS/2 controller test failed");
+            return 1;
+        }
     }
     // Secondary dual channel check
     if (!dual_channel) {
@@ -59,56 +60,64 @@ int ps2_init(void) {
             kern_log(FILTER_DEBUG, "Debug: Disabling PS/2 port 2");
             outb(PS2_COMMAND_PORT, PS2_DISABLE_PORT_2);
         }
-        kern_log(FILTER_DEBUG, "Debug: Dual channel PS/2 controller not detected");
+        else {
+            kern_log(FILTER_DEBUG, "Debug: Dual channel PS/2 controller not detected");
+        }
     }
     kern_log(FILTER_DEBUG, "Debug: Testing PS/2 port 1");
     outb(PS2_COMMAND_PORT, PS2_TEST_PORT);
-    response = inb(PS2_DATA_PORT);
-    switch (response) {
-        case PS2_PORT_TEST_PASS:
-            kern_log(FILTER_DEBUG, "Debug: PS/2 port 1 passed test");
-            port1 = true;
-            break;
-        case PS2_PORT_TEST_FAIL_CL:
-            kern_log(FILTER_WARNING, "PS/2 port 1 failed test: clock line struck low");
-            break;
-        case PS2_PORT_TEST_FAIL_CH:
-            kern_log(FILTER_WARNING, "PS/2 port 1 failed test: clock line struck high");
-            break;
-        case PS2_PORT_TEST_FAIL_DL:
-            kern_log(FILTER_WARNING, "PS/2 port 1 failed test: data line struck low");
-            break;
-        case PS2_PORT_TEST_FAIL_DH:
-            kern_log(FILTER_WARNING, "PS/2 port 1 failed test: data line struck high");
-            break;
-        default:
-            kern_log(FILTER_ERROR, "PS/2 port test returned invalid response");
-            return 1;
+    while (port1 == -1) {
+        response = inb(PS2_DATA_PORT);
+        switch (response) {
+            case PS2_PORT_TEST_PASS:
+                kern_log(FILTER_DEBUG, "Debug: PS/2 port 1 passed test");
+                port1 = true;
+                break;
+            case PS2_PORT_TEST_FAIL_CL:
+                kern_log(FILTER_WARNING, "PS/2 port 1 failed test: clock line struck low");
+                port1 = false;
+                break;
+            case PS2_PORT_TEST_FAIL_CH:
+                kern_log(FILTER_WARNING, "PS/2 port 1 failed test: clock line struck high");
+                port1 = false;
+                break;
+            case PS2_PORT_TEST_FAIL_DL:
+                kern_log(FILTER_WARNING, "PS/2 port 1 failed test: data line struck low");
+                port1 = false;
+                break;
+            case PS2_PORT_TEST_FAIL_DH:
+                kern_log(FILTER_WARNING, "PS/2 port 1 failed test: data line struck high");
+                port1 = false;
+                break;
+        }
     }
     if (dual_channel) {
         kern_log(FILTER_DEBUG, "Debug: Testing PS/2 port 2");
         outb(PS2_COMMAND_PORT, PS2_TEST_PORT);
-        response = inb(PS2_DATA_PORT);
-        switch (response) {
-            case PS2_PORT_TEST_PASS:
-                kern_log(FILTER_DEBUG, "Debug: PS/2 port 2 passed test");
-                port2 = true;
-                break;
-            case PS2_PORT_TEST_FAIL_CL:
-                kern_log(FILTER_WARNING, "PS/2 port 2 failed test: clock line struck low");
-                break;
-            case PS2_PORT_TEST_FAIL_CH:
-                kern_log(FILTER_WARNING, "PS/2 port 2 failed test: clock line struck high");
-                break;
-            case PS2_PORT_TEST_FAIL_DL:
-                kern_log(FILTER_WARNING, "PS/2 port 2 failed test: data line struck low");
-                break;
-            case PS2_PORT_TEST_FAIL_DH:
-                kern_log(FILTER_WARNING, "PS/2 port 2 failed test: data line struck high");
-                break;
-            default:
-                kern_log(FILTER_ERROR, "PS/2 port test returned invalid response");
-                return 1;
+        while (port2 == -1) {
+            response = inb(PS2_DATA_PORT);
+            switch (response) {
+                case PS2_PORT_TEST_PASS:
+                    kern_log(FILTER_DEBUG, "Debug: PS/2 port 2 passed test");
+                    port2 = true;
+                    break;
+                case PS2_PORT_TEST_FAIL_CL:
+                    kern_log(FILTER_WARNING, "PS/2 port 2 failed test: clock line struck low");
+                    port2 = false;
+                    break;
+                case PS2_PORT_TEST_FAIL_CH:
+                    kern_log(FILTER_WARNING, "PS/2 port 2 failed test: clock line struck high");
+                    port2 = false;
+                    break;
+                case PS2_PORT_TEST_FAIL_DL:
+                    kern_log(FILTER_WARNING, "PS/2 port 2 failed test: data line struck low");
+                    port2 = false;
+                    break;
+                case PS2_PORT_TEST_FAIL_DH:
+                    kern_log(FILTER_WARNING, "PS/2 port 2 failed test: data line struck high");
+                    port2 = false;
+                    break;
+            }
         }
     }
     if (!port1 && !port2) {
@@ -236,7 +245,7 @@ ps2_port_identity ps2_port_identify(ui8_t port) {
         while ((inb(PS2_STATUS_PORT) & 1) == 0) {
             // 1 second timeout
             if (get_uptime_seconds() >= timeout_start + PS2_TIMEOUT_DURATION) {
-                kern_log(FILTER_DEBUG, "Debug: intentional PS/2 timeout: end of identity command");
+                kern_log(FILTER_DEBUG, "Debug: Intentional PS/2 timeout: end of identity command");
                 // Re-enable scanning
                 ps2_send_byte(port, PS2_ENABLE_SCANNING);
                 ps2_wait_for_ack(port, PS2_ENABLE_SCANNING);

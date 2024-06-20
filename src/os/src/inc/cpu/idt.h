@@ -39,6 +39,7 @@ __attribute__((aligned(0x10))) static idt_entry_t idt[MAX_IDT_ENTRIES]; // idt: 
 static idtr_t idtr;
 
 // Function definitions
+void page_fault_handler(cpu_status_t* cpu_status);
 cpu_status_t* interrupt_handler(cpu_status_t* cpu_status);
 void idt_set_descriptor(ui8_t vect, void* isr, ui8_t flags);
 void mask_pic_interrupts(void);

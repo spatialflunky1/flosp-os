@@ -11,7 +11,7 @@ typedef signed short i16_t;
 typedef signed int i32_t;
 typedef signed int __attribute__((__mode__(__DI__))) i64_t;
 
-typedef ui8_t bool;
+typedef i8_t bool;
 #define true 1
 #define false 0
 

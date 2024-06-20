@@ -21,12 +21,13 @@ void main(BOOT_INFO* boot_info) {
     acpi_ccheck(boot_info->XSDPTable);
     // ACPI Init (variables and such)
     acpi_init(boot_info->XSDPTable);
+    kern_log(FILTER_INFO, "ACPI enabled");
     // LAPIC
     enable_lapic();
     kern_log(FILTER_INFO, "LAPIC enabled");
     // Timers
-    kern_log(FILTER_DEBUG, "Initializing the PIT for kernel usage");
-    pit_init();
+    kern_log(FILTER_DEBUG, "Debug: Initializing the system timer for kernel usage");
+    timers_init();
     // PS/2
     if (check_ps2()) {
         ps2_init();
@@ -35,6 +36,8 @@ void main(BOOT_INFO* boot_info) {
 
     // Initialize keyboard
     keyboard_init();
+    // Start system prompt
+    enter_sysprompt();
     // Halt execution
     while (true) { 
         __asm__ volatile ("hlt");

@@ -65,7 +65,7 @@
 // End of Interrupt command
 #define PIC_EOI 0x20
 
-void outb(ui16_t port, ui8_t value);
-ui8_t inb(ui16_t port);
+void   outb(ui16_t port, ui8_t value);
+ui8_t  inb(ui16_t port);
 
 #endif
