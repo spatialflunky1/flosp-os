@@ -117,12 +117,6 @@ void* get_mem_page(void* addr) {
         }
     }
 
-    // ui64_t phys_addr_index = (ui64_t)addr & (1<<page_offset_width) - 1;
-    // kprint("\nPhysAddrI:  ");
-    // kprint_hex(phys_addr_index, true);
-    // ui64_t phys_addr = (page & ~0xFFF) + phys_addr_index;
-    // kprint("\nPhysAddr:   ");
-    // kprint_hex(phys_addr, true);
     return page;
 }
 
