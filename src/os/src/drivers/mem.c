@@ -57,8 +57,14 @@ void set_mem_page_flags(void* addr, ui64_t flags) {
     // Flags
     kprint("\nFlags:      ");
     kprint_hex(flags, true);
-    flush_buffer();
+    flush_framebuffer();
     
+    /*
+    
+    No Need for the commented out code below as in this current test case the caching type (or memory type at all) does not change
+    
+    */
+
     // // Remove previous mapping
     // (*page) &= ~0x1;
     // // Flush the TLB
@@ -71,10 +77,10 @@ void set_mem_page_flags(void* addr, ui64_t flags) {
 
     kprint("\nPage(Post): ");
     kprint_hex((*page), true);
-    flush_buffer();
+    flush_framebuffer();
 
     blank_output();
-    flush_buffer();
+    flush_framebuffer();
 }
 
 void* get_mem_page(void* addr) {

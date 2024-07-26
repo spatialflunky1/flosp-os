@@ -23,7 +23,7 @@ typedef struct {
 } FRAMEBUFFER_INFO_T;
 
 void initialize_video(BOOT_VIDEO_MODE_INFO* VMI);
-void flush_buffer(void);
+void flush_framebuffer(void);
 void blank_output(void);
 void kputchar(const unsigned char c);
 void kscroll_down(void);

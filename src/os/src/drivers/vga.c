@@ -39,7 +39,7 @@ void initialize_video(BOOT_VIDEO_MODE_INFO* VMI) {
     blank_output();
 }
 
-void flush_buffer(void) {
+void flush_framebuffer(void) {
     memcpy(
         VideoModeInfo->BackbufferPointer,
         VideoModeInfo->FramebufferPointer,
@@ -140,7 +140,7 @@ void kscroll_down(void) {
             pos++;
         }
     }
-    flush_buffer();
+    flush_framebuffer();
 }
 
 void kprint(const char *s) {
