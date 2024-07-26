@@ -5,6 +5,8 @@
 #include <video.h>
 #include <elf.h>
 
+int check_file_exists(CHAR16* KernelFilename, EFI_SYSTEM_TABLE* SystemTable);
+
 EFI_STATUS load_kernel(
         EFI_FILE_PROTOCOL* RootFileSystem, 
         CHAR16* KernelFilename, 

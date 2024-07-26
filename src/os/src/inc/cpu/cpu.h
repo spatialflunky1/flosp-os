@@ -99,6 +99,9 @@ typedef struct {
 extern ui64_t read_cr0(void);
 extern void   write_cr0(ui64_t cr0_val);
 extern ui64_t read_cr2(void);
+extern ui64_t read_cr3(void);
+extern ui64_t read_cr4(void);
+extern void write_cr4(ui64_t cr4_val);
 
 // Inline functions need to be defined in the header
 static inline ui64_t cpuid(int code) {

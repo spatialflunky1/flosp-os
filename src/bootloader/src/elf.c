@@ -14,11 +14,11 @@ EFI_STATUS read_elf_identity(EFI_SYSTEM_TABLE* SystemTable, EFI_FILE_PROTOCOL* K
     status = KernelImage->SetPosition(
             (struct EFI_FILE_PROTOCOL*)KernelImage, 
             0);
+    efi_print(SystemTable, L"Test print\r\n");
     if (EFI_ERROR(status)) {
         efi_print(SystemTable, L"Fatal: Error resetting file pointer position\r\n");
         return status;
     }
-    efi_print(SystemTable, L"Test print\r\n");
 
     #ifdef DEBUG
         efi_print(SystemTable, L"Debug: Allocating buffer for ELF identity\r\n");
@@ -171,7 +171,7 @@ EFI_STATUS read_elf_file(EFI_SYSTEM_TABLE* SystemTable, EFI_FILE_PROTOCOL* Kerne
     return status;
 }
 
-void print_elf_info(EFI_SYSTEM_TABLE* SystemTable, void* KernelHeader, void* KernelProgramHeaders) {
+void print_elf_info(EFI_SYSTEM_TABLE* SystemTable, void* KernelHeader) {
     Elf64_Ehdr* header = (Elf64_Ehdr*)KernelHeader;
     efi_print(SystemTable, L"Debug: Kernel ELF header info:\r\n");
     

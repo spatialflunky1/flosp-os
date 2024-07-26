@@ -16,7 +16,7 @@ EFI_STATUS init_efi_fs(EFI_SYSTEM_TABLE* SystemTable, EFI_SIMPLE_FILE_SYSTEM_PRO
         return status;
     }
     #ifdef DEBUG
-    efi_print(SystemTable, L"Debug: EFI filesystem loaded\r\n");
+        efi_print(SystemTable, L"Debug: EFI filesystem loaded\r\n");
     #endif
     return status;
 }

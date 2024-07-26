@@ -21,16 +21,16 @@ bool keyboard_enabled = false;
 bool shift_down = false;
 
 int ps2_scancode_correction(ui8_t port) {
-    if (ps2_send_byte(port, PS2_KEYBOARD_SET_SCANCODE_SET) == 1) {
+    if (ps2_port_write_data(port, PS2_KEYBOARD_SET_SCANCODE_SET) == 1) {
+        kern_log(FILTER_ERROR, "Error: PS/2 port write failed: PS2_KEYBOARD_SET_SCANCODE_SET");
         return 1;
     }
     if (ps2_wait_for_ack(port, PS2_KEYBOARD_SET_SCANCODE_SET) == 1) {
+        kern_log(FILTER_ERROR, "Error: PS/2 port acknowledgement failed: PS2_KEYBOARD_SET_SCANCODE_SET");
         return 1;
     }
-    if (ps2_send_byte(port, PS2_KEYBOARD_SET_SCANCODE_1) == 1) {
-        return 1;
-    }
-    if (ps2_wait_for_ack(port, PS2_KEYBOARD_SET_SCANCODE_1) == 1) {
+    if (ps2_port_write_data(port, PS2_KEYBOARD_SET_SCANCODE_1) == 1) {
+        kern_log(FILTER_ERROR, "Error: PS/2 port write failed: PS2_KEYBOARD_SET_SCANCODE_1");
         return 1;
     }
     return 0;
@@ -42,6 +42,7 @@ void keyboard_init(void) {
         // check and set ps/2 keyboard port info
         if (ps2_port_identity_translation(get_ps2_port_identity(1)) == TRANSLATION_KEYBOARD) {
             if (ps2_scancode_correction(1) == 1) {
+                kern_log(FILTER_ERROR, "Error: PS/2 port 1 scancode correction failed");
                 return;
             }
             kern_log(FILTER_DEBUG, "Debug: Keyboard initialized");
@@ -49,6 +50,7 @@ void keyboard_init(void) {
         }
         else if (ps2_port_identity_translation(get_ps2_port_identity(2)) == TRANSLATION_KEYBOARD) {
             if (ps2_scancode_correction(2) == 1) {
+                kern_log(FILTER_ERROR, "Error: PS/2 port 2 scancode correction failed");
                 return;
             }
             kern_log(FILTER_DEBUG, "Debug: Keyboard initialized");
@@ -57,12 +59,13 @@ void keyboard_init(void) {
         else {
             kern_log(FILTER_INFO, "Info: No PS/2 keyboard detected");
         }
+        flush_ps2_output_buffer();
     }
     else if (is_usb_init()) {
-        
+        kern_log(FILTER_ERROR, "YOU SHOULD NOT BE HERE YOU SCOUNDREL");
     }
     else {
-        kern_log(FILTER_WARNING, "Error: Keyboard initialization failed, no keyboard found");
+        kern_log(FILTER_WARNING, "Error: Keyboard initialization failed, no controller found");
     }
 }
 

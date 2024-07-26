@@ -53,9 +53,10 @@ cpu_status_t* interrupt_handler(cpu_status_t* cpu_status) {
             break;
         case 0x2C:
             // Mouse interrupt
-            if (check_mouse_enabled()) {
-                mouse_handler();
-            }
+            flush_ps2_output_buffer();
+            // if (check_mouse_enabled()) {
+            //     mouse_handler();
+            // }
             break;
         default:
             kprint("Unexpected Interrupt: ");

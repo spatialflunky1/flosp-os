@@ -29,13 +29,14 @@ void main(BOOT_INFO* boot_info) {
     kern_log(FILTER_DEBUG, "Debug: Initializing the system timer for kernel usage");
     timers_init();
     // PS/2
-    if (check_ps2()) {
-        ps2_init();
-    }
-    // USB
+    // if (check_ps2()) {
+    //     ps2_init();
+    // }
+    // // USB
 
-    // Initialize keyboard
-    keyboard_init();
+    // // Initialize keyboard
+    // keyboard_init();
+    kscroll_down();
     // Start system prompt
     enter_sysprompt();
     // Halt execution

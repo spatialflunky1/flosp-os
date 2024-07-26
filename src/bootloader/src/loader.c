@@ -1,11 +1,11 @@
 #include <loader.h>
 
 EFI_STATUS load_kernel(EFI_FILE_PROTOCOL* RootFileSystem, CHAR16* KernelFilename, EFI_PHYSICAL_ADDRESS* KernelEntryPoint, EFI_SYSTEM_TABLE* SystemTable) {
-    EFI_STATUS status = EFI_SUCCESS;
-    EFI_FILE_PROTOCOL* KernelImage;
-    UINT8* ELFIDBuffer = NULL;
-    void* KernelHeader = NULL;
-    void* KernelProgramHeaders = NULL;
+    EFI_STATUS         status               = EFI_SUCCESS;
+    EFI_FILE_PROTOCOL* KernelImage          = NULL;
+    UINT8*             ELFIDBuffer          = NULL;
+    void*              KernelHeader         = NULL;
+    void*              KernelProgramHeaders = NULL;
 
     #ifdef INFO
         efi_print(SystemTable, L"Info: Loading kernel\r\n");
@@ -13,6 +13,7 @@ EFI_STATUS load_kernel(EFI_FILE_PROTOCOL* RootFileSystem, CHAR16* KernelFilename
     #ifdef DEBUG
         efi_print(SystemTable, L"Debug: Opening kernel file\r\n");
     #endif
+    // Check if file exists (found) first
     status = RootFileSystem->Open(
             (struct EFI_FILE_PROTOCOL*)RootFileSystem, 
             (struct EFI_FILE_PROTOCOL**)&KernelImage, 
@@ -23,7 +24,14 @@ EFI_STATUS load_kernel(EFI_FILE_PROTOCOL* RootFileSystem, CHAR16* KernelFilename
         efi_print(SystemTable, L"Fatal: Error opening kernel file\r\n");
         return status;
     }
-
+    if (status == EFI_NOT_FOUND || KernelImage == NULL) {
+        efi_print(SystemTable, L"Fatal: kernel file not found\r\n");
+        efi_print(SystemTable, L"Error status: ");
+        efi_printnum(SystemTable, ERRCODE(status));
+        efi_print(SystemTable, L"\r\n");
+        while(1);
+    }
+    
     // Read the ELF identity from the kernel file
     status = read_elf_identity(SystemTable, KernelImage, &ELFIDBuffer);
     if (EFI_ERROR(status)) {
@@ -55,7 +63,7 @@ EFI_STATUS load_kernel(EFI_FILE_PROTOCOL* RootFileSystem, CHAR16* KernelFilename
 
     // Debug: print the kernel headers
     #ifdef DEBUG
-        print_elf_info(SystemTable, KernelHeader, KernelProgramHeaders);
+        print_elf_info(SystemTable, KernelHeader);
     #endif
 
     // Load the kernel memory segments

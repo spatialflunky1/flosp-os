@@ -77,7 +77,6 @@ EFI_STATUS read_elf_file(
 
 void print_elf_info(
         EFI_SYSTEM_TABLE* SystemTable, 
-        void* KernelHeader, 
-        void* KernelProgramHeaders);
+        void* KernelHeader);
 
 #endif

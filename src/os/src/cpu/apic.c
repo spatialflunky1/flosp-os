@@ -64,6 +64,6 @@ void enable_lapic(void) {
     lapic_write_reg((ui64_t)lapic_addr + SPURIOUS_VECTOR, lapic_read_reg((ui64_t)lapic_addr + SPURIOUS_VECTOR) | 0x100); // Set bit 8, enable local APIC  
 }
 
-volatile void* get_lapic_address(void) {
+inline volatile void* get_lapic_address(void) {
     return lapic_addr;
 }

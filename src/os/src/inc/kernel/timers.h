@@ -6,8 +6,7 @@
 #include <cpu/acpi.h>
 #include <cpu/apic.h>
 
-#define CHANNEL_0_FREQUENCY_HZ 1000
-#define PS2_TIMEOUT_DURATION 1
+#define CHANNEL_0_FREQUENCY_HZ 100
 // HPET memory mapped registers
 #define HPET_OFFSET_GENERAL_CAPABILITIES                  0x000
 #define HPET_OFFSET_GENERAL_CONFIGURATION                 0x010

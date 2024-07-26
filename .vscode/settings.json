@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "sysprompt.h": "c",
+        "loader.h": "c",
+        "mem.h": "c",
+        "datatypes.h": "c",
+        "kernel.h": "c",
+        "cpu.h": "c",
+        "power_mgmt.h": "c",
+        "vga.h": "c",
+        "boot_font.h": "c",
+        "*.tcc": "c"
+    }
+}

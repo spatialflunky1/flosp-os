@@ -4,9 +4,8 @@
 //
 // Global Vars
 //
-// Output info
-ui16_t output_height = 0;
-ui16_t output_width = 0;
+FRAMEBUFFER_INFO_T framebuffer_info = {0,0,0,0};
+BOOT_VIDEO_MODE_INFO* VideoModeInfo = NULL;
 // Text info
 ui16_t text_col_px = 0;
 ui16_t text_line = 0;
@@ -18,19 +17,43 @@ ui8_t font_size = 16; // height
 
 void initialize_video(BOOT_VIDEO_MODE_INFO* VMI) {
     VideoModeInfo = VMI;
-    output_height = VideoModeInfo->VerticalResolution;
-    output_width  = VideoModeInfo->HorizontalResolution;
-    max_text_line = (output_height / font_size) - 1;
+    framebuffer_info.width  = VideoModeInfo->PixelsPerScanline;
+    framebuffer_info.height = VideoModeInfo->VerticalResolution;
+    framebuffer_info.pitch  = VideoModeInfo->PixelsPerScanline * 4;
+    framebuffer_info.depth  = 32;
+    max_text_line = (framebuffer_info.height / font_size) - 1;
+    // Set framebuffer page tables to look to PAT PA4 (instead of memory default PA0)
+    // THIS SHOULD WORK AS IS RIGHT NOW AS THE MEMORY MODE IS NOT CHANGING (PAT modification commented out below) (WB -> WB)
+    for (ui64_t i = 0; i < (framebuffer_info.width * framebuffer_info.height * 4); i++) {
+        set_mem_page_flags(
+            (void*)((ui64_t)VideoModeInfo->FramebufferPointer + i),
+            PFlag_PAT);
+    }
+    // // Set PAT PA4 to Write-Combining mode (mode 001)
+    // ui32_t low,high;
+    // rdmsr(0x277, &low, &high);
+    // low |= 0b00100000000000000000000000000000000; // Set bit 32
+    // low &= ~0b11000000000000000000000000000000000; // Clear bits 33 and 34
+    // wrmsr(0x277, low, high);
+    
     blank_output();
+}
+
+void flush_buffer(void) {
+    memcpy(
+        VideoModeInfo->BackbufferPointer,
+        VideoModeInfo->FramebufferPointer,
+        VideoModeInfo->PixelsPerScanline * VideoModeInfo->HorizontalResolution * 4
+    );
 }
 
 void blank_output(void) {
     ui32_t* pos;
-    for (ui64_t row = 0; row < VideoModeInfo->VerticalResolution; row++) {
-        for (ui64_t col = 0; col < VideoModeInfo->HorizontalResolution; col++) {
-            pos = VideoModeInfo->FramebufferPointer;
+    for (ui64_t row = 0; row < framebuffer_info.height; row++) {
+        for (ui64_t col = 0; col < framebuffer_info.width; col++) {
+            pos = VideoModeInfo->BackbufferPointer;
             // Set row
-            pos += row * VideoModeInfo->HorizontalResolution;
+            pos += row * framebuffer_info.width;
             // Set cold
             pos += col;
 
@@ -57,9 +80,9 @@ void kputchar(const unsigned char c) {
         }
         return;
     }
-    ui32_t* pos = VideoModeInfo->FramebufferPointer;
+    ui32_t* pos = VideoModeInfo->BackbufferPointer;
     // Advance to current line
-    pos += text_line * font_size * VideoModeInfo->HorizontalResolution;
+    pos += text_line * font_size * framebuffer_info.width;
     // Advance to current column
     pos += ((text_col_px)  + 8) - 1; // font width is always 8;
                                       // algorithm starts at the last pixel of the line
@@ -91,7 +114,7 @@ void kputchar(const unsigned char c) {
             pos--;
         }
         ch_addr++;
-        last_pos += VideoModeInfo->HorizontalResolution;
+        last_pos += framebuffer_info.width;
         pos = last_pos;
     }
     text_col_px += 9; // 9 instead of 8 to add a space in between chars printed
@@ -99,24 +122,25 @@ void kputchar(const unsigned char c) {
 
 void kscroll_down(void) {
     // start at 2nd line
-    ui32_t* pos = VideoModeInfo->FramebufferPointer;
-    pos += font_size * VideoModeInfo->HorizontalResolution;
+    ui32_t* pos = VideoModeInfo->BackbufferPointer;
+    pos += font_size * framebuffer_info.width;
     // Move all pixels up by font_size lines
     for (ui16_t row = 0; row < font_size * max_text_line; row++) {
         memcpy(pos,
-                (pos - (font_size * VideoModeInfo->HorizontalResolution)),
-                VideoModeInfo->HorizontalResolution * 4);
-        pos += VideoModeInfo->HorizontalResolution;
+              (pos - (font_size * framebuffer_info.width)),
+                framebuffer_info.width * 4);
+        pos += framebuffer_info.width;
     }
     // Blank last line
-    pos = VideoModeInfo->FramebufferPointer;
-    pos += max_text_line * font_size * VideoModeInfo->HorizontalResolution;
+    pos = VideoModeInfo->BackbufferPointer;
+    pos += max_text_line * font_size * framebuffer_info.width;
     for (ui16_t row = 0; row < font_size; row++) {
-        for (ui16_t col = 0; col < VideoModeInfo->HorizontalResolution; col++) {
+        for (ui16_t col = 0; col < framebuffer_info.width; col++) {
             *pos = rgb(0, 0, 0);
             pos++;
         }
     }
+    flush_buffer();
 }
 
 void kprint(const char *s) {
@@ -235,4 +259,12 @@ void backspace(void) {
     }
     kputchar(' ');
     text_col_px -= 9; // One font width back for next char 
+}
+
+void* get_framebuffer_address(void) {
+    return VideoModeInfo->FramebufferPointer;
+}
+
+void* get_backbuffer_address(void) {
+    return VideoModeInfo->BackbufferPointer;
 }

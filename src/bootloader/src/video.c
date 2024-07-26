@@ -8,7 +8,7 @@ void efi_print(EFI_SYSTEM_TABLE* SystemTable, CHAR16* s) {
 
 void efi_printnum(EFI_SYSTEM_TABLE* SystemTable, UINT64 n) {
     CHAR16 StringBuffer[UINT64_MAX_DEC_DIGITS];
-    INT8   stack_top = -1;
+    INT16   stack_top = -1;
     // Append the digits to the string buffer
     if (n == 0) {
         stack_top++;
@@ -21,7 +21,7 @@ void efi_printnum(EFI_SYSTEM_TABLE* SystemTable, UINT64 n) {
     }
 
     // Reverse digits into the correct order in the StringBuffer
-    INT8 tmp_index = stack_top;
+    INT16 tmp_index = stack_top;
     CHAR16 tmp;
     for (; tmp_index > (stack_top/2); tmp_index--) {
         tmp = StringBuffer[stack_top - tmp_index];
@@ -36,7 +36,7 @@ void efi_printnum(EFI_SYSTEM_TABLE* SystemTable, UINT64 n) {
 
 void efi_printhex(EFI_SYSTEM_TABLE* SystemTable, UINT64 h, UINT8 zero_x) {
     CHAR16 StringBuffer[UINT64_MAX_HEX_DIGITS];
-    INT8   stack_top = -1;
+    INT16   stack_top = -1;
     // Append the hex digits to the string buffer
     if (h == 0) {
         stack_top++;
@@ -56,7 +56,7 @@ void efi_printhex(EFI_SYSTEM_TABLE* SystemTable, UINT64 h, UINT8 zero_x) {
     }
 
     // Reverse digits into the correct order in the StringBuffer
-    INT8 tmp_index = stack_top;
+    INT16 tmp_index = stack_top;
     CHAR16 tmp1;
     for (; tmp_index > (stack_top/2); tmp_index--) {
         tmp1 = StringBuffer[stack_top - tmp_index];
@@ -89,6 +89,10 @@ EFI_STATUS graphics_init(EFI_SYSTEM_TABLE* SystemTable, UefiGraphicsService* Gra
     if (EFI_ERROR(status)) {
         efi_print(SystemTable, L"Fatal: Error locating graphics output protocol handle buffer\r\n");
         return status;
+    }
+    if (GraphicsService->handle_count == 0) {
+        efi_print(SystemTable, L"Fatal: Error locating any graphics output protocol handles\r\n");
+        while(1);
     }
 
     return status;
@@ -123,6 +127,13 @@ EFI_STATUS find_graphics_mode(
             efi_print(SystemTable, L"\r\n");
         }
 
+        // efi_print(SystemTable, L"Resolution #");
+        // efi_printnum(SystemTable, i);
+        // efi_print(SystemTable, L": ");
+        // efi_printnum(SystemTable, ModeInfo->HorizontalResolution);
+        // efi_print(SystemTable, L"x");
+        // efi_printnum(SystemTable, ModeInfo->VerticalResolution);
+        // efi_print(SystemTable, L"\r\n");
         if (ModeInfo->HorizontalResolution == TargetWidth &&
             ModeInfo->VerticalResolution   == TargetHeight &&
             ModeInfo->PixelFormat          == TargetPixelFormat)
@@ -134,7 +145,6 @@ EFI_STATUS find_graphics_mode(
             return status;
         }
     }
-
     return EFI_UNSUPPORTED;
 }
 

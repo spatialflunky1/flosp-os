@@ -121,23 +121,18 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable) {
 
     // Open the graphics output protocol from the active console's handle
     status = SystemTable->BootServices->OpenProtocol(
-            SystemTable->ConsoleOutHandle,
+            GraphicsService.handle_buffer[0],
             &gEfiGraphicsOutputProtocolGuid,
             (void**)&GraphicsOutputProtocol,
             ImageHandle,
             NULL,
             EFI_OPEN_PROTOCOL_BY_HANDLE_PROTOCOL);
-    #ifdef DEBUG
-        if (EFI_ERROR(status)) {
-            efi_print(SystemTable, L"Debug: Failed to open graphics output protocol on the current console\r\n");
-        }
-    #endif
+    if (EFI_ERROR(status)) {
+        efi_print(SystemTable, L"Fatal: Failed to open graphics output protocol on the current console\r\n");
+        while(1);
+    }
     
-    /*
-     * Only uncomment to set the graphics mode if necessary
-     * Use bios default for bootloader and set resolution when booted
-     *
-    if (GraphicsOutputProtocol != NULL) {
+    if (status == EFI_NOT_STARTED || !GraphicsOutputProtocol->Mode) {
         status = set_graphics_mode(
                 SystemTable, 
                 GraphicsOutputProtocol, 
@@ -149,17 +144,30 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable) {
             return status;
         }
     }
-    */
+
+    if ((void*)GraphicsOutputProtocol->Mode->FrameBufferBase == NULL) {
+        efi_print(SystemTable, L"Fatal: Framebuffer address is NULL");
+        while(1);
+    }
 
     // Save graphics info in BootInfo
     BootInfo.VideoModeInfo.FramebufferPointer =
         (void*)GraphicsOutputProtocol->Mode->FrameBufferBase;
+
     BootInfo.VideoModeInfo.HorizontalResolution =
         GraphicsOutputProtocol->Mode->Info->HorizontalResolution;
+
     BootInfo.VideoModeInfo.VerticalResolution = 
         GraphicsOutputProtocol->Mode->Info->VerticalResolution;
+
     BootInfo.VideoModeInfo.PixelsPerScanline = 
         GraphicsOutputProtocol->Mode->Info->PixelsPerScanline;
+
+    SystemTable->BootServices->AllocatePool(
+        EfiLoaderData,
+        BootInfo.VideoModeInfo.VerticalResolution * BootInfo.VideoModeInfo.PixelsPerScanline * 4,
+        &BootInfo.VideoModeInfo.BackbufferPointer
+    );
 
     //
     // ACPI XSDP Table
@@ -205,6 +213,11 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable) {
     status = FileSystemProtocol->OpenVolume(
             (struct EFI_SIMPLE_FILE_SYSTEM_PROTOCOL*)FileSystemProtocol, 
             (struct EFI_FILE_PROTOCOL**)&RootFileSystem);
+    #ifdef DEBUG
+        efi_print(SystemTable, L"Debug: Root file system address: ");
+        efi_printhex(SystemTable, (UINT64)RootFileSystem, 1);
+        efi_print(SystemTable, L"\r\n");
+    #endif
     if (EFI_ERROR(status)) {
         efi_print(SystemTable, L"Fatal: Error opening EFI boot volume\r\n");
         return status;
@@ -261,7 +274,6 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable) {
     #ifdef DEBUG
         print_video_mode_info(SystemTable, &BootInfo.VideoModeInfo);
     #endif
-
     //
     // Enter kernel
     //

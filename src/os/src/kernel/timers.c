@@ -1,7 +1,7 @@
 #include <kernel/timers.h>
 
-// ticks: system uptime in milliseconds
-// this method is used as it should be able to count for a little over 584 million years
+// ticks: system uptime in 10 milliseconds
+// this method is used as it should be able to count for a little over 5840 million years
 volatile ui64_t ticks = 0;
 
 // HPET vars
@@ -46,7 +46,7 @@ void pit_disable(void) {
     outb(PIT_MODE_COMMAND_REGISTER, command);
 }
 
-// Sets the PIT channel 0 to a 1000 Hz frequency
+// Sets the PIT channel 0 to a 100 Hz frequency
 void pit_init(void) {
     // mode/command bitfield:
     // 6-7: Channel        (00b)
@@ -123,7 +123,7 @@ void lapic_timer_init(void) {
     // Repeated code in if statement to avoid delay in calibration
     if (hpet_base_addr != NULL) {
         // Set timer initial count to -1
-        *(ui32_t*)(lapic_addr + APIC_TIMER_INITIAL_COUNT) = -1; // val: 0xFFFFFFFF
+        lapic_write_reg((ui64_t)lapic_addr + APIC_TIMER_INITIAL_COUNT, -1); // val: 0xFFFFFFFF
         // HPET sleep 10ms
         kern_log(FILTER_DEBUG, "Debug: HPET sleeping 10 ms for lapic calibration");
         hpet_sleep(10, HPET_MILLISECONDS);
@@ -140,7 +140,7 @@ void lapic_timer_init(void) {
     // Stop apic timer
     lapic_write_reg((ui64_t)lapic_addr + APIC_LVT_TIMER, APIC_DISABLE);
     // Save amount of ticks in 10 ms
-    ui32_t ticks_10ms = 0xFFFFFFFF - *(ui32_t*)(lapic_addr + APIC_TIMER_CURRENT_COUNT);
+    ui32_t ticks_10ms = 0xFFFFFFFF - lapic_read_reg((ui64_t)lapic_addr + APIC_TIMER_CURRENT_COUNT);
     //
     // Re-enable the timer with the found value
     //
@@ -156,8 +156,8 @@ void lapic_timer_init(void) {
 }
 
 cpu_status_t* timer_handler(cpu_status_t* cpu_status) {
-    ticks++;
     if (lapic_timer_enabled) {
+        ticks++;
         lapic_write_reg((ui64_t)get_lapic_address() + APIC_EOI, 0);
     }
     return cpu_status;

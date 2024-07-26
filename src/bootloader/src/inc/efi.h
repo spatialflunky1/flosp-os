@@ -16,6 +16,7 @@
 
 #define EFI_ERROR(a) (a < 0)
 #define EFIERR(a)    (EFI_STATUS)(0x8000000000000000 | a)
+#define ERRCODE(a)   (a & 0b0111111111111111111111111111111111111111111111111111111111111111)
 
 #define EFI_PAGE_MASK  0xFFF
 #define EFI_PAGE_SHIFT 12
@@ -27,11 +28,14 @@
 #define EFI_INVALID_PARAMETER     EFIERR(2)
 #define EFI_UNSUPPORTED           EFIERR(3)
 #define EFI_BUFFER_TOO_SMALL      EFIERR(5)
-#define EFI_NOT_FOUND            EFIERR(14)
-#define EFI_INCOMPATIBLE_VERSION EFIERR(25)
+#define EFI_NOT_FOUND             EFIERR(14)
+#define EFI_NOT_STARTED           EFIERR(19)
+#define EFI_INCOMPATIBLE_VERSION  EFIERR(25)
 
 // Open Modes
-#define EFI_FILE_MODE_READ 0x0000000000000001
+#define EFI_FILE_MODE_READ   0x0000000000000001
+#define EFI_FILE_MODE_WRITE  0x0000000000000002
+#define EFI_FILE_MODE_CREATE 0x8000000000000000
 // File Attributes
 #define EFI_FILE_READ_ONLY 0x0000000000000001
 
@@ -516,7 +520,7 @@ typedef struct {
     UINT32                    HorizontalResolution;
     UINT32                    VerticalResolution;
     EFI_GRAPHICS_PIXEL_FORMAT PixelFormat;
-    EFI_PIXEL_BITMASK  PixelInformation;
+    EFI_PIXEL_BITMASK         PixelInformation;
     UINT32                    PixelsPerScanline;
 } EFI_GRAPHICS_OUTPUT_MODE_INFORMATION;
 
@@ -549,6 +553,7 @@ typedef struct {
 
 typedef struct {
     void*  FramebufferPointer;
+    void*  BackbufferPointer;
     UINT32 HorizontalResolution;
     UINT32 VerticalResolution;
     UINT32 PixelsPerScanline;
